@@ -9,36 +9,27 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.MsoftTexas.directionandweather.Adapters.DragupListAdapter;
+import com.MsoftTexas.directionandweather.DirectionApiModel.DirectionApi;
+import com.MsoftTexas.directionandweather.DirectionApiModel.Route;
 import com.MsoftTexas.directionandweather.Models.Apidata;
 import com.MsoftTexas.directionandweather.Models.Item;
 import com.MsoftTexas.directionandweather.Models.MStep;
@@ -46,15 +37,9 @@ import com.MsoftTexas.directionandweather.Models.MStep;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.directions.route.Route;
-import com.directions.route.RouteException;
-import com.directions.route.Routing;
-import com.directions.route.RoutingListener;
 
-import com.google.android.gms.location.places.AutocompletePrediction;
+
 import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -67,10 +52,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.RuntimeRemoteException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
+import com.google.maps.android.PolyUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.apache.http.HttpResponse;
@@ -86,25 +69,18 @@ import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback
-        ,View.OnClickListener,
-        RoutingListener{
+        ,View.OnClickListener
+        {
 
 
-    int mYear;
-    int mMonth;
-    int mDay;
-    int mHour;
-    int mMinute;
-
-    Boolean weatherloaded=false;
-    Boolean routeloaded=false;
-    TextView time;
-    TextView date;
+    int mYear,mMonth,mDay, mHour, mMinute;
+    static long interval=50000;
+    Boolean weatherloaded=false, routeloaded=false;
+    TextView time, date;
     static TextView src,dstn;
     Snackbar snackbar;
     SlidingUpPanelLayout slidingUpPanelLayout;
-    long jstart_date_millis;
-    long jstart_time_millis;
+    long jstart_date_millis, jstart_time_millis;
     private Marker originMarker, dstnMarker;
     private List<Marker> markers = new ArrayList<>();
     Apidata apiData=null;
@@ -114,18 +90,13 @@ public class MapActivity extends AppCompatActivity implements
    // private LatLng origin = new LatLng(21.20237812824328, 81.66264429688454);
   //  private LatLng destination = new LatLng(21.093630988713727,80.70856142789125);
 
-    String placedata;
     TextView tw, tw2;
     ImageView RequestDirection;
      static LatLng origin = null;
 
      static LatLng destination = null;
-    private AdapterView.OnItemClickListener mAutocompleteClickListenerS, mAutocompleteClickListenerD;
-    private OnCompleteListener<PlaceBufferResponse> mUpdatePlaceDetailsCallback;
-    protected GeoDataClient mGeoDataClientS, mGeoDataClientD;
 
-    boolean flag = false;
-    private PlaceAutocompleteAdapter mAdapterS, mAdapterD;
+    protected GeoDataClient mGeoDataClientS, mGeoDataClientD;
 
     SharedPreferences sd;
 
@@ -276,79 +247,70 @@ public class MapActivity extends AppCompatActivity implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent=new Intent(getApplicationContext(),MapActivity.class);
+            Intent intent=new Intent(getApplicationContext(),SettingsActivity.class);
             startActivity(intent);
-            Toast.makeText(this, "Cleared", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
             return true;
         }
         else if (id==R.id.action_retry){
             requestDirection();
-            Toast.makeText(this, "retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Retrying...", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id==R.id.action_clr){
+            Toast.makeText(this, "clear", Toast.LENGTH_SHORT).show();
+            recreate();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
 
-    @Override
-    public void onRoutingFailure(RouteException e) {
 
-    }
-
-    @Override
-    public void onRoutingStart() {
-        System.out.println("routing data has started........");
-    }
-
-    @Override
-    public void onRoutingSuccess(ArrayList<com.directions.route.Route> route, int shortestRouteIndex) {
-
-        routeloaded=true;
-
-        if(weatherloaded){
-            snackbar.dismiss();
-        }else{
-            snackbar.setText("loading weather...");
-
-        }
-
-        System.out.println("here is the route data :\n"+new Gson().toJson(route));
-
-        System.out.println("direction success.............babes.......");
-        polylines = new ArrayList<>();
-        //add route(s) to the map.
-
-        tw.setText("("+route.get(0).getDistanceText()+")");
-        tw2.setText(route.get(0).getDurationText());
-if (route.get(0).getDurationText()!=null){
-    slidingUpPanelLayout.setPanelHeight(getApplicationContext().getResources().getDimensionPixelSize(R.dimen.dragupsize));
-}
-
-
-        System.out.println("route options : "+route.size());
-        for (int i = 0; i < route.size(); i++) {
-
-            //In case of more than 5 alternative routes
-            int colorIndex = i % COLORS.length;
-
-            PolylineOptions polyOptions = new PolylineOptions();
-            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
-            polyOptions.width(10 + i * 3);
-            polyOptions.addAll(route.get(i).getPoints());
-
-
-            Polyline polyline = googleMap.addPolyline(polyOptions);
-            polylines.add(polyline);
-
-        }
-
-        setCameraWithCoordinationBounds(route.get(0));
-    }
-
-    @Override
-    public void onRoutingCancelled() {
-
-    }
+//    @Override
+//    public void onRoutingSuccess(ArrayList<com.directions.route.Route> route, int shortestRouteIndex) {
+//
+//        routeloaded=true;
+//
+//       List<LatLng> lst= PolyUtil.decode("yafyBewimNeGaB{CnDkLpNmIeGeTsCog@uRcR_IsA_JyGaFaFsEyUyWyZ_NsKAkN_EiIuJqUwSaVaKuHI}\\y_@}Lam@aZud@wGgY_\\cLmEiIiLiMeCoYmYsQqIgW}@iQiNua@_Iae@CoVkEaMwJi[Ccb@aIuPdFkVNcGsNwP{QgJeWeVsJiAuh@gOgZaH{O}Lw[kIuPcKuP{EaEeR|AuQaCwQ{CqWkNiGmHmPKeCyEki@}Lwl@sb@xNev@d_@yx@`^gM_DsEb@rAlIyBnAcQuGqWrMsV`e@uMlLiq@`hAgg@zVor@xj@s{Adl@al@|p@yYvPkXfQ_s@|CwnB`LaV_D{T}OqDeAeWvJiP|I{TjVan@oOiu@|Euf@hDoCd@q@sGwAiMkBaRsEgf@nAoo@cCm]dIug@}Dke@tAa`@jVubAlIut@~Eii@nDkv@eCi^uK{V}TwWyk@ak@qTeZ{MeZcQcTgOo^BiLbRwQ`Smo@rCasAj@kWiUubAqFaiArAia@jMopArQ_xAuDwDoHqAmRaFcRf@mKaH}GqKuRs@wb@sXmsAbE}^pDqFQkAsDsFkEgB}DiDcH_WoB}`@gJc]oHkMqC_HkF}FyJ{HeKyU_I}KqQ{@eToDkNiFiJoRmKuW[gJwCwM{AuLwJkPyBaYoTePkWUsGqH}J_I}HcUaCOmE}AuUy[gLw]eGck@vAsMmFeNgG{VcCux@wIgVsH{ZcFiFkBoBcHbAeVgD_MuKaRgD_XzGc\\pHsMpEu]eA_QiJWmOvJsl@Nm]VqXmCcMpAosAr_@cb@?m`AkLeuEsUia@cDuEgEeCHkJdD_HyAuFkO{jAigBci@sw@qyAiyA{wCopC}~BwzAo[cg@o_Ao}Ak[cj@sGmVG\\_ArGsXe@s|@nLkgAxe@ys@tDkjAp@mR~B{KZcQkR{LsIsi@eFk`B{Zma@wEoQhPoGFwb@kEs[zSgUnEsT`f@}JkFKmEqCsKnKuH`Ewc@uCeMcSoVqg@vR_p@`JwO|H}]xAkNfEiF~HeU~RiQbSaPxJuIUyFVgNbDiWpDcRPsX{Ci[iGij@{B_DgHik@bMmWrKe\\`OmTJih@_Cms@sBaHOqBpHqFdNeq@|]yb@fQox@bHen@|Lec@f@}m@rJmj@jMwzAxX}g@vMuZpTwEl@UkIcFs]wGul@]wOaDkLqEgHoBR}H_DwQgBmM~K{ZjIoYzCk]cAkN{A}@oGoFoOuU{PcB{TuHmi@w]sTuP_@wHuFcImSaSoTpKsTnKcL`GmD|IgKdFkWp@cI");
+//        System.out.println("here is polyline : "+route.get(0).getPolyline());
+//        if(weatherloaded){
+//            snackbar.dismiss();
+//        }else{
+//            snackbar.setText("loading weather...");
+//
+//        }
+//
+//        System.out.println("here is the route data :\n"+new Gson().toJson(route));
+//
+//        System.out.println("direction success.............babes.......");
+//        polylines = new ArrayList<>();
+//        //add route(s) to the map.
+//
+//        tw.setText("("+route.get(0).getDistanceText()+")");
+//        tw2.setText(route.get(0).getDurationText());
+//     if (route.get(0).getDurationText()!=null){
+//       slidingUpPanelLayout.setPanelHeight(getApplicationContext().getResources().getDimensionPixelSize(R.dimen.dragupsize));
+//      }
+//
+//
+//
+//        System.out.println("route options : "+route.size());
+//        for (int i = 0; i < route.size(); i++) {
+//
+//            //In case of more than 5 alternative routes
+//            int colorIndex = i % COLORS.length;
+//
+//            PolylineOptions polyOptions = new PolylineOptions();
+//            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
+//            polyOptions.width(10 + i * 3);
+//            polyOptions.addAll(lst);
+//            Polyline polyline = googleMap.addPolyline(polyOptions);
+//            polylines.add(polyline);
+//
+//        }
+//
+//      //  setCameraWithCoordinationBounds(route.get(0));
+//    }
 
     @Override
     public void onClick(View view) {
@@ -477,11 +439,11 @@ if (route.get(0).getDurationText()!=null){
         apiData=null;
         weatherloaded=false;
         routeloaded=false;
-       snackbar= Snackbar.make(RequestDirection, "loading...",30000);
-       snackbar.show();
+
         if(origin!=null && destination!=null) {
             googleMap.clear();
-
+            snackbar= Snackbar.make(RequestDirection, "loading...",30000);
+            snackbar.show();
             originMarker=googleMap.addMarker(new MarkerOptions().position(origin).icon(BitmapDescriptorFactory.fromResource(R.drawable.pinb)));
             originMarker.setDraggable(true);
             originMarker.setTitle("source");
@@ -491,13 +453,14 @@ if (route.get(0).getDurationText()!=null){
             dstnMarker.setTitle("destination");
 
 
-             new Routing.Builder()
-                    .travelMode(Routing.TravelMode.DRIVING)
-                    .withListener(MapActivity.this)
-                    .key(serverKey)
-                    .waypoints(origin,destination)
-                    .build()
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+              new routing().execute();
+//             new Routing.Builder()
+//                    .travelMode(Routing.TravelMode.DRIVING)
+//                    .withListener(MapActivity.this)
+//                    .key(serverKey)
+//                    .waypoints(origin,destination)
+//                    .build()
+//                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
              new MapActivity.apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }else{
             Toast.makeText(getApplicationContext(),"origin or destination null", Toast.LENGTH_LONG).show();
@@ -505,8 +468,8 @@ if (route.get(0).getDurationText()!=null){
     }
 
     private void setCameraWithCoordinationBounds(Route route) {
-        LatLng southwest = new LatLng(route.getLatLgnBounds().southwest.latitude,route.getLatLgnBounds().southwest.longitude);
-        LatLng northeast =  new LatLng(route.getLatLgnBounds().northeast.latitude,route.getLatLgnBounds().northeast.longitude);
+        LatLng southwest = new LatLng(route.getBounds().getSouthwest().getLat(),route.getBounds().getSouthwest().getLng());
+        LatLng northeast =  new LatLng(route.getBounds().getNortheast().getLat(),route.getBounds().getSouthwest().getLng());
         LatLngBounds bounds = new LatLngBounds(southwest, northeast);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150));
     }
@@ -578,6 +541,117 @@ if (route.get(0).getDurationText()!=null){
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+    public class routing extends AsyncTask<Object,Object,DirectionApi> {
+
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected void onPostExecute(DirectionApi apidata) {
+
+            routeloaded=true;
+
+            System.out.println("direction data : "+new Gson().toJson(apidata));
+
+            Route route=apidata.getRoutes().get(0);
+
+
+            System.out.println("here is polyline : "+apidata.getRoutes().get(0).getOverview_polyline().getPoints());
+            if(weatherloaded){
+                snackbar.dismiss();
+            }else{
+                snackbar.setText("loading weather...");
+            }
+
+            System.out.println("here is the route data :\n"+new Gson().toJson(apidata));
+
+            System.out.println("direction success.............babes.......");
+            polylines = new ArrayList<>();
+            //add route(s) to the map.
+
+            tw.setText("("+route.getLegs().get(0).getDistance().getText()+")");
+            tw2.setText(route.getLegs().get(0).getDuration().getText());
+            if (route.getLegs().get(0).getDuration().getText()!=null){
+                slidingUpPanelLayout.setPanelHeight(getApplicationContext().getResources().getDimensionPixelSize(R.dimen.dragupsize));
+            }
+
+
+
+            System.out.println("route options : "+apidata.getRoutes().size());
+            for (int i = 0; i < apidata.getRoutes().size(); i++) {
+                List<LatLng> lst= PolyUtil.decode(apidata.getRoutes().get(i).getOverview_polyline().getPoints());
+                //In case of more than 5 alternative routes
+                int colorIndex = i % COLORS.length;
+
+                PolylineOptions polyOptions = new PolylineOptions();
+                polyOptions.color(getResources().getColor(COLORS[colorIndex]));
+                polyOptions.width(10 + i * 3);
+                polyOptions.addAll(lst);
+                Polyline polyline = googleMap.addPolyline(polyOptions);
+                polylines.add(polyline);
+
+            }
+
+            setCameraWithCoordinationBounds(route);
+
+
+        }
+
+        @Override
+        protected DirectionApi doInBackground(Object[] objects) {
+            try {
+
+
+                HttpClient client = new DefaultHttpClient();
+
+
+                HttpResponse response = null;
+
+                //nbsc-1518068960369.appspot.com
+                System.out.println("https://maps.googleapis.com/maps/api/directions/json?origin="
+                        +origin.latitude+","+origin.longitude
+                        +"&destination="+destination.latitude+","+destination.longitude
+                        +"&alternatives=true"
+                        +"&key=AIzaSyDi3B9R9hVpC9YTmOCCz_pCR1BKW3tIRGY");
+                HttpGet request = new HttpGet("https://maps.googleapis.com/maps/api/directions/json?origin="
+                        +origin.latitude+","+origin.longitude
+                        +"&destination="+destination.latitude+","+destination.longitude
+                        +"&alternatives=true"
+                        +"&key=AIzaSyDi3B9R9hVpC9YTmOCCz_pCR1BKW3tIRGY");
+                BufferedReader rd=null;
+                try {
+                    response = client.execute(request);
+                    rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+//                    String line="";
+//                    while ((line=rd.readLine())!=null){
+//                        System.out.println(line+"\n");
+//                    }
+                    return new Gson().fromJson(rd,DirectionApi.class);
+                } catch (Exception e) {
+                    System.out.println("error : " + e.toString());
+
+
+                    String line="";
+                    while ((line=rd.readLine())!=null){
+                        System.out.println(line+"\n");
+                    }
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+
+        }
+
+
+    }
+
 
 
     public class apidata extends AsyncTask<Object,Object,Apidata> {
