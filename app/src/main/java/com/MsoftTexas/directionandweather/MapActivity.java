@@ -469,7 +469,7 @@ public class MapActivity extends AppCompatActivity implements
 
     private void setCameraWithCoordinationBounds(Route route) {
         LatLng southwest = new LatLng(route.getBounds().getSouthwest().getLat(),route.getBounds().getSouthwest().getLng());
-        LatLng northeast =  new LatLng(route.getBounds().getNortheast().getLat(),route.getBounds().getSouthwest().getLng());
+        LatLng northeast =  new LatLng(route.getBounds().getNortheast().getLat(),route.getBounds().getNortheast().getLng());
         LatLngBounds bounds = new LatLngBounds(southwest, northeast);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150));
     }
