@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="0dp"
+    android:background="#fff"
+    >
+    <android.support.v7.widget.CardView
+        android:layout_margin="9dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_marginBottom="9dp"
+            android:layout_marginTop="9dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginLeft="7dp"
+            android:elevation="4dp"
+            android:padding="8dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <LinearLayout
+                android:paddingTop="7dp"
+                android:paddingRight="2dp"
+                android:paddingLeft="2dp"
+                android:paddingBottom="7dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+
+                    <!--<TextView-->
+
+                        <!--android:fontFamily="sans-serif-condensed"-->
+                        <!--android:id="@+id/Weather"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="Weather"-->
+                        <!--android:textSize="14sp" />-->
+                <TextView
+
+                    android:textColor="#43A047"
+                    android:fontFamily="sans-serif-condensed"
+                    android:id="@+id/temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="temp"
+                    android:textSize="43sp" />
+                <LinearLayout
+                    android:layout_marginBottom="10dp"
+android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/weatherImg"
+                    android:layout_marginLeft="2dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+                <TextView
+                    android:layout_marginLeft="2dp"
+                    android:id="@+id/weather"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="weatherval"
+                    android:textColor="#43A047"
+                    android:textSize="12sp" />
+                </LinearLayout>
+
+
+                    <!--<TextView-->
+                        <!--android:fontFamily="sans-serif-condensed"-->
+                        <!--android:id="@+id/Temp"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="Temp"-->
+                        <!--android:textSize="14sp" />-->
+
+
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:elevation="1dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="-2dp"
+                    android:textAlignment="center"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textSize="15sp"
+                    android:id="@+id/arrtime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="arrtime"
+                    android:textAllCaps="true"/>
+
+                <TextView
+                    android:elevation="1dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="-2dp"
+                    android:textAlignment="center"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textSize="15sp"
+                    android:id="@+id/distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="distance"
+                    android:textAllCaps="true"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <TextView
+                    android:elevation="1dp"
+
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="-2dp"
+                    android:textAlignment="center"
+                    android:layout_weight="0"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textSize="15sp"
+                    android:id="@+id/instr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="instruction"
+                    android:textAllCaps="true"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>
