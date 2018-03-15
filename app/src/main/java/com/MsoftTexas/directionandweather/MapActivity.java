@@ -55,6 +55,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import com.google.maps.android.PolyUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.stone.vega.library.VegaLayoutManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -124,7 +125,7 @@ public class MapActivity extends AppCompatActivity implements
 
 
         link = (RecyclerView) findViewById(R.id.dragup_list_recycler);
-        link.setLayoutManager(new LinearLayoutManager(this));
+        link.setLayoutManager(new VegaLayoutManager());
 
 
         tw = findViewById(R.id.distance);
