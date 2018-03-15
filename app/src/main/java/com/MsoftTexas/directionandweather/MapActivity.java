@@ -72,7 +72,7 @@ public class MapActivity extends AppCompatActivity implements
         ,View.OnClickListener
         {
 
-
+    int selectedroute=0;
     int mYear,mMonth,mDay, mHour, mMinute;
     static long interval=50000;
     Boolean weatherloaded=false, routeloaded=false;
@@ -90,7 +90,8 @@ public class MapActivity extends AppCompatActivity implements
    // private LatLng origin = new LatLng(21.20237812824328, 81.66264429688454);
   //  private LatLng destination = new LatLng(21.093630988713727,80.70856142789125);
 
-    TextView tw, tw2;
+            DirectionApi directionapi;
+    TextView distance, duration;
     ImageView RequestDirection;
      static LatLng origin = null;
 
@@ -100,7 +101,7 @@ public class MapActivity extends AppCompatActivity implements
 
     SharedPreferences sd;
 
-    private static final int[] COLORS = new int[]{R.color.colorPrimaryDark,R.color.colorPrimary,R.color.place_autocomplete_prediction_primary_text,R.color.colorAccent,R.color.primary_dark_material_light};
+ //   private static final int[] COLORS = new int[]{R.color.colorPrimaryDark,R.color.colorPrimary,R.color.colorPrimary,R.color.colorPrimary,R.color.colorPrimary};
 
 
     RecyclerView link;
@@ -127,8 +128,8 @@ public class MapActivity extends AppCompatActivity implements
         link.setLayoutManager(new LinearLayoutManager(this));
 
 
-        tw = findViewById(R.id.distance);
-        tw2 = findViewById(R.id.duration);
+        distance = findViewById(R.id.distance);
+        duration = findViewById(R.id.duration);
 
         time = findViewById(R.id.time);
         date = findViewById(R.id.date);
@@ -265,53 +266,6 @@ public class MapActivity extends AppCompatActivity implements
     }
 
 
-
-//    @Override
-//    public void onRoutingSuccess(ArrayList<com.directions.route.Route> route, int shortestRouteIndex) {
-//
-//        routeloaded=true;
-//
-//       List<LatLng> lst= PolyUtil.decode("yafyBewimNeGaB{CnDkLpNmIeGeTsCog@uRcR_IsA_JyGaFaFsEyUyWyZ_NsKAkN_EiIuJqUwSaVaKuHI}\\y_@}Lam@aZud@wGgY_\\cLmEiIiLiMeCoYmYsQqIgW}@iQiNua@_Iae@CoVkEaMwJi[Ccb@aIuPdFkVNcGsNwP{QgJeWeVsJiAuh@gOgZaH{O}Lw[kIuPcKuP{EaEeR|AuQaCwQ{CqWkNiGmHmPKeCyEki@}Lwl@sb@xNev@d_@yx@`^gM_DsEb@rAlIyBnAcQuGqWrMsV`e@uMlLiq@`hAgg@zVor@xj@s{Adl@al@|p@yYvPkXfQ_s@|CwnB`LaV_D{T}OqDeAeWvJiP|I{TjVan@oOiu@|Euf@hDoCd@q@sGwAiMkBaRsEgf@nAoo@cCm]dIug@}Dke@tAa`@jVubAlIut@~Eii@nDkv@eCi^uK{V}TwWyk@ak@qTeZ{MeZcQcTgOo^BiLbRwQ`Smo@rCasAj@kWiUubAqFaiArAia@jMopArQ_xAuDwDoHqAmRaFcRf@mKaH}GqKuRs@wb@sXmsAbE}^pDqFQkAsDsFkEgB}DiDcH_WoB}`@gJc]oHkMqC_HkF}FyJ{HeKyU_I}KqQ{@eToDkNiFiJoRmKuW[gJwCwM{AuLwJkPyBaYoTePkWUsGqH}J_I}HcUaCOmE}AuUy[gLw]eGck@vAsMmFeNgG{VcCux@wIgVsH{ZcFiFkBoBcHbAeVgD_MuKaRgD_XzGc\\pHsMpEu]eA_QiJWmOvJsl@Nm]VqXmCcMpAosAr_@cb@?m`AkLeuEsUia@cDuEgEeCHkJdD_HyAuFkO{jAigBci@sw@qyAiyA{wCopC}~BwzAo[cg@o_Ao}Ak[cj@sGmVG\\_ArGsXe@s|@nLkgAxe@ys@tDkjAp@mR~B{KZcQkR{LsIsi@eFk`B{Zma@wEoQhPoGFwb@kEs[zSgUnEsT`f@}JkFKmEqCsKnKuH`Ewc@uCeMcSoVqg@vR_p@`JwO|H}]xAkNfEiF~HeU~RiQbSaPxJuIUyFVgNbDiWpDcRPsX{Ci[iGij@{B_DgHik@bMmWrKe\\`OmTJih@_Cms@sBaHOqBpHqFdNeq@|]yb@fQox@bHen@|Lec@f@}m@rJmj@jMwzAxX}g@vMuZpTwEl@UkIcFs]wGul@]wOaDkLqEgHoBR}H_DwQgBmM~K{ZjIoYzCk]cAkN{A}@oGoFoOuU{PcB{TuHmi@w]sTuP_@wHuFcImSaSoTpKsTnKcL`GmD|IgKdFkWp@cI");
-//        System.out.println("here is polyline : "+route.get(0).getPolyline());
-//        if(weatherloaded){
-//            snackbar.dismiss();
-//        }else{
-//            snackbar.setText("loading weather...");
-//
-//        }
-//
-//        System.out.println("here is the route data :\n"+new Gson().toJson(route));
-//
-//        System.out.println("direction success.............babes.......");
-//        polylines = new ArrayList<>();
-//        //add route(s) to the map.
-//
-//        tw.setText("("+route.get(0).getDistanceText()+")");
-//        tw2.setText(route.get(0).getDurationText());
-//     if (route.get(0).getDurationText()!=null){
-//       slidingUpPanelLayout.setPanelHeight(getApplicationContext().getResources().getDimensionPixelSize(R.dimen.dragupsize));
-//      }
-//
-//
-//
-//        System.out.println("route options : "+route.size());
-//        for (int i = 0; i < route.size(); i++) {
-//
-//            //In case of more than 5 alternative routes
-//            int colorIndex = i % COLORS.length;
-//
-//            PolylineOptions polyOptions = new PolylineOptions();
-//            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
-//            polyOptions.width(10 + i * 3);
-//            polyOptions.addAll(lst);
-//            Polyline polyline = googleMap.addPolyline(polyOptions);
-//            polylines.add(polyline);
-//
-//        }
-//
-//      //  setCameraWithCoordinationBounds(route.get(0));
-//    }
-
     @Override
     public void onClick(View view) {
 
@@ -322,6 +276,32 @@ public class MapActivity extends AppCompatActivity implements
         this.googleMap = googleMap;
 
         //ON     googleMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(36,41),4) );
+
+        googleMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener()
+        {
+            @Override
+            public void onPolylineClick(Polyline polyline)
+            {
+
+                int val=0;
+                for(int k=0;k<polylines.size();k++){
+                   if(!polylines.get(k).equals(polyline)){
+                       polylines.get(k).setColor( getResources().getColor(R.color.alternateRoute));
+                       polylines.get(k).setWidth(15);
+                   }else{
+                       val=k;
+                   }
+                }
+
+                polylines.get(val).setColor(getResources().getColor(R.color.seletedRoute));
+                polylines.get(val).setWidth(18);
+    //            val=val==0?directionapi.getRoutes().size()-1:val;
+                distance.setText("("+directionapi.getRoutes().get(val).getLegs().get(0).getDistance().getText()+")");
+                duration.setText(directionapi.getRoutes().get(val).getLegs().get(0).getDuration().getText());
+                //do something with polyline
+            }
+        });
+
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
 
             @Override
@@ -353,8 +333,6 @@ public class MapActivity extends AppCompatActivity implements
                 try{
 
                     Item item= apiData.getItems().get(Integer.parseInt(marker.getTag().toString()));
-
-
 
                     AlertDialog.Builder builderSingle = new AlertDialog.Builder(MapActivity.this);
 
@@ -461,7 +439,7 @@ public class MapActivity extends AppCompatActivity implements
 //                    .waypoints(origin,destination)
 //                    .build()
 //                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-             new MapActivity.apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//             new MapActivity.apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }else{
             Toast.makeText(getApplicationContext(),"origin or destination null", Toast.LENGTH_LONG).show();
         }
@@ -471,7 +449,7 @@ public class MapActivity extends AppCompatActivity implements
         LatLng southwest = new LatLng(route.getBounds().getSouthwest().getLat(),route.getBounds().getSouthwest().getLng());
         LatLng northeast =  new LatLng(route.getBounds().getNortheast().getLat(),route.getBounds().getNortheast().getLng());
         LatLngBounds bounds = new LatLngBounds(southwest, northeast);
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200));
     }
 
 
@@ -555,8 +533,8 @@ public class MapActivity extends AppCompatActivity implements
 
             routeloaded=true;
 
-            System.out.println("direction data : "+new Gson().toJson(apidata));
-
+      //      System.out.println("direction data : "+new Gson().toJson(apidata));
+           directionapi=apidata;
             Route route=apidata.getRoutes().get(0);
 
 
@@ -573,8 +551,8 @@ public class MapActivity extends AppCompatActivity implements
             polylines = new ArrayList<>();
             //add route(s) to the map.
 
-            tw.setText("("+route.getLegs().get(0).getDistance().getText()+")");
-            tw2.setText(route.getLegs().get(0).getDuration().getText());
+            distance.setText("("+route.getLegs().get(0).getDistance().getText()+")");
+            duration.setText(route.getLegs().get(0).getDuration().getText());
             if (route.getLegs().get(0).getDuration().getText()!=null){
                 slidingUpPanelLayout.setPanelHeight(getApplicationContext().getResources().getDimensionPixelSize(R.dimen.dragupsize));
             }
@@ -582,18 +560,36 @@ public class MapActivity extends AppCompatActivity implements
 
 
             System.out.println("route options : "+apidata.getRoutes().size());
-            for (int i = 0; i < apidata.getRoutes().size(); i++) {
-                List<LatLng> lst= PolyUtil.decode(apidata.getRoutes().get(i).getOverview_polyline().getPoints());
-                //In case of more than 5 alternative routes
-                int colorIndex = i % COLORS.length;
-
+            if(apidata.getRoutes().size()>0) {
+                List<LatLng> lst = PolyUtil.decode(apidata.getRoutes().get(0).getOverview_polyline().getPoints());
                 PolylineOptions polyOptions = new PolylineOptions();
-                polyOptions.color(getResources().getColor(COLORS[colorIndex]));
-                polyOptions.width(10 + i * 3);
+                polyOptions.color(getResources().getColor(R.color.seletedRoute));
+                polyOptions.width(18);
                 polyOptions.addAll(lst);
                 Polyline polyline = googleMap.addPolyline(polyOptions);
                 polylines.add(polyline);
+                polyline.setClickable(true);
+            }
 
+            if(apidata.getRoutes().size()>1) {
+                for (int i = 1; i < apidata.getRoutes().size(); i++) {
+                    List<LatLng> lst = PolyUtil.decode(apidata.getRoutes().get(i).getOverview_polyline().getPoints());
+                    //In case of more than 5 alternative routes
+                    //   int colorIndex = i % COLORS.length;
+
+                    PolylineOptions polyOptions = new PolylineOptions();
+
+                        polyOptions.color(getResources().getColor(R.color.alternateRoute));
+                        polyOptions.width(15);
+
+
+                    polyOptions.addAll(lst);
+                    Polyline polyline = googleMap.addPolyline(polyOptions);
+                    polylines.add(polyline);
+
+                    polyline.setClickable(true);
+
+                }
             }
 
             setCameraWithCoordinationBounds(route);

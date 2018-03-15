@@ -5,4 +5,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="tbts_pressed">#7f422c64</color>
     <color name="loo_pre">#fff</color>
+    <!--<color name="alternateRoute">#fff</color>-->
+    <color name="alternateRoute">#fabbc2c6</color>
+    <!--<color name="seletedRoute">#fff</color>-->
+    <color name="seletedRoute">#2563ca</color>
 </resources>
