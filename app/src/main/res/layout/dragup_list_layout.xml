@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="9dp"
-    app:cardElevation="5dp"
-    app:cardCornerRadius="5dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="0dp"
+    android:background="#fff"
+    >
+    <android.support.v7.widget.CardView
+        android:layout_margin="9dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
         <LinearLayout
             android:layout_marginBottom="9dp"
             android:layout_marginTop="9dp"
@@ -119,21 +118,29 @@ android:layout_gravity="bottom"
                     android:text="distance"
                     android:textAllCaps="true"/>
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
                 <TextView
                     android:elevation="1dp"
+
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="-2dp"
                     android:textAlignment="center"
                     android:layout_weight="0"
                     android:layout_gravity="center_vertical"
                     android:fontFamily="sans-serif-condensed"
-                    android:textSize="11sp"
+                    android:textSize="15sp"
                     android:id="@+id/instr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="instruction instruction instruction instruction instruction instruction instruction instruction instruction instruction instruction instruction instructioninstruction instruction"
+                    android:text="instruction"
                     android:textAllCaps="true"/>
+            </LinearLayout>
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
-</FrameLayout>
+</LinearLayout>
