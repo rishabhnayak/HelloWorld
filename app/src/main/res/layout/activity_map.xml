@@ -170,6 +170,7 @@ android:visibility="gone"
                     android:layout_alignParentBottom="true"
                     android:layout_margin="@dimen/fab_margin"
                     android:src="@drawable/ic_today_black_24dp" />
+
             </RelativeLayout>
         </LinearLayout>
         <LinearLayout

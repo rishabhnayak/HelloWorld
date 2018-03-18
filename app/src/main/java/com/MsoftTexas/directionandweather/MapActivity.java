@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -120,6 +121,9 @@ public class MapActivity extends AppCompatActivity implements
         dstn=findViewById(R.id.autocomplete_destination);
         RequestDirection=findViewById(R.id.request_direction);
 
+
+        //setting title null
+        getSupportActionBar().setTitle("");
 
 //sliding up layout
         slidingUpPanelLayout=findViewById(R.id.sliding_layout);
@@ -246,25 +250,49 @@ public class MapActivity extends AppCompatActivity implements
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent=new Intent(getApplicationContext(),SettingsActivity.class);
-            startActivity(intent);
-            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.km20:
+                if (item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+               // displayToast("One Selected");
+                MapActivity.interval=20000;
+                requestDirection();
+                return true;
+            case R.id.km30:
+                if (item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+                MapActivity.interval=30000;
+                requestDirection();
+                Toast.makeText(this, "30km", Toast.LENGTH_SHORT).show();
+               // displayToast("Two Selected");
+                return true;
+            case R.id.km40:
+                if (item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+                MapActivity.interval=40000;
+                requestDirection();
+               // displayToast("Three Selected");
+                return true;
+            case R.id.km50:
+                if (item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+                MapActivity.interval=50000;
+                requestDirection();
+                //displayToast("Four Selected");
+                return true;
+            case R.id.action_retry:
+                requestDirection();
+                Toast.makeText(this, "Retrying...", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_clr:
+                Toast.makeText(this, "clear", Toast.LENGTH_SHORT).show();
+                recreate();
+                return true;
+                default:
+                return super.onOptionsItemSelected(item);
         }
-        else if (id==R.id.action_retry){
-            requestDirection();
-            Toast.makeText(this, "Retrying...", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (id==R.id.action_clr){
-            Toast.makeText(this, "clear", Toast.LENGTH_SHORT).show();
-            recreate();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
