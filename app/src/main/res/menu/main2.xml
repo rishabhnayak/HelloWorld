@@ -10,8 +10,8 @@
     <item
         android:id="@+id/action_clr"
         android:orderInCategory="100"
-        android:title="clr"
-        app:showAsAction="always" />
+        android:title="Clear"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

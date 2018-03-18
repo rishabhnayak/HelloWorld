@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -76,7 +77,8 @@ public class MapActivity extends AppCompatActivity implements
     int mYear,mMonth,mDay, mHour, mMinute;
     static long interval=50000;
     Boolean weatherloaded=false, routeloaded=false;
-    TextView time, date;
+    TextView time;
+    FloatingActionButton date;
     static TextView src,dstn;
     Snackbar snackbar;
     SlidingUpPanelLayout slidingUpPanelLayout;
@@ -179,7 +181,7 @@ public class MapActivity extends AppCompatActivity implements
         mMinute = c.get(Calendar.MINUTE);
         jstart_date_millis=c.getTimeInMillis()-((mHour*60+mMinute)*60*1000);
         jstart_time_millis=(mHour*60+mMinute)*60*1000;
-        date.setText(mDay+"-"+(mMonth+1)+"-"+mYear);
+//        date.setText(mDay+"-"+(mMonth+1)+"-"+mYear);
 
         String sHour = mHour < 10 ? "0" + mHour : "" + mHour;
         String sMinute = mMinute < 10 ? "0" + mMinute : "" + mMinute;
@@ -469,7 +471,7 @@ public class MapActivity extends AppCompatActivity implements
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                     //   date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                         Calendar cal = Calendar.getInstance();
                         cal.set(Calendar.DAY_OF_MONTH,dayOfMonth);
                         cal.set(Calendar.MONTH, monthOfYear);
