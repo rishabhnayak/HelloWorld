@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -114,7 +115,11 @@ public class MapActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
+        Toast toast = Toast.makeText(this, "Please Give Feedback...", Toast.LENGTH_LONG);
+        View view = toast.getView();
+        view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        view.setBackground(getResources().getDrawable(R.drawable.loading_background));
+        toast.show();
         sd = this.getSharedPreferences("com.MsoftTexas.directionandweather", Context.MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -587,7 +592,7 @@ loading.setVisibility(View.GONE);
                         loading.setVisibility(View.GONE);
                         slidingUpPanelLayout.setAlpha(1);
                     }
-                }, 1200);
+                }, 1500);
 
             }else{
 //                snackbar.setText("loading weather...");
@@ -607,7 +612,7 @@ loading.setVisibility(View.GONE);
                         loading.setVisibility(View.GONE);
                         slidingUpPanelLayout.setAlpha(1);
                     }
-                }, 1200);
+                }, 1500);
 
             }
             System.out.println("direction success.............babes.......");
