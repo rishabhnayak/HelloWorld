@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -36,6 +37,7 @@ import com.MsoftTexas.directionandweather.Models.Apidata;
 import com.MsoftTexas.directionandweather.Models.Item;
 import com.MsoftTexas.directionandweather.Models.MStep;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -73,7 +75,7 @@ public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback
         ,View.OnClickListener
         {
-
+    LottieAnimationView loading;
     int selectedroute=0;
     int mYear,mMonth,mDay, mHour, mMinute;
     static long interval=50000;
@@ -120,8 +122,9 @@ public class MapActivity extends AppCompatActivity implements
         src =findViewById(R.id.autocomplete_source);
         dstn=findViewById(R.id.autocomplete_destination);
         RequestDirection=findViewById(R.id.request_direction);
-
-
+//loading.................lottie
+loading=findViewById(R.id.loading);
+loading.setVisibility(View.GONE);
         //setting title null
         getSupportActionBar().setTitle("");
 
@@ -450,8 +453,13 @@ public class MapActivity extends AppCompatActivity implements
 
         if(origin!=null && destination!=null) {
             googleMap.clear();
-            snackbar= Snackbar.make(RequestDirection, "loading...",30000);
-            snackbar.show();
+//            snackbar= Snackbar.make(RequestDirection, "loading...",30000);
+//            snackbar.show();
+            loading.setVisibility(View.VISIBLE);
+            slidingUpPanelLayout.setAlpha(0.5f);
+           // loading.setProgress(0);
+            loading.setSpeed(1f);
+
             originMarker=googleMap.addMarker(new MarkerOptions().position(origin).icon(BitmapDescriptorFactory.fromResource(R.drawable.pinb)));
             originMarker.setDraggable(true);
             originMarker.setTitle("source");
@@ -570,13 +578,38 @@ public class MapActivity extends AppCompatActivity implements
 
             System.out.println("here is polyline : "+apidata.getRoutes().get(0).getOverview_polyline().getPoints());
             if(weatherloaded){
-                snackbar.dismiss();
+//                snackbar.dismiss();
+                Handler handler = new Handler();
+
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        loading.setVisibility(View.GONE);
+                        slidingUpPanelLayout.setAlpha(1);
+                    }
+                }, 1200);
+
             }else{
-                snackbar.setText("loading weather...");
+//                snackbar.setText("loading weather...");
+                loading.setVisibility(View.VISIBLE);
+                slidingUpPanelLayout.setAlpha(0.5f);
+             //   loading.setProgress(0);
+                loading.setSpeed(1f);
             }
 
             System.out.println("here is the route data :\n"+new Gson().toJson(apidata));
+            if (new Gson().toJson(apidata)!=null){
+                Handler handler = new Handler();
 
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        loading.setVisibility(View.GONE);
+                        slidingUpPanelLayout.setAlpha(1);
+                    }
+                }, 1200);
+
+            }
             System.out.println("direction success.............babes.......");
             polylines = new ArrayList<>();
             //add route(s) to the map.
@@ -705,6 +738,8 @@ public class MapActivity extends AppCompatActivity implements
                 for(final Item item:apidata.getItems()) {
                     c++;
                     System.out.println(new Gson().toJson(item));
+                    loading.setVisibility(View.GONE);
+                    slidingUpPanelLayout.setAlpha(1);
                     //   googleMap.addMarker(new MarkerOptions().position(item.getPoint()));
                     final int finalC = c;
                     Glide.with(getApplicationContext())
@@ -740,6 +775,8 @@ public class MapActivity extends AppCompatActivity implements
                 for(final MStep mStep:apidata.getSteps()) {
                     c++;
                     System.out.println(new Gson().toJson(mStep));
+                    loading.setVisibility(View.GONE);
+                    slidingUpPanelLayout.setAlpha(1);
                     //   googleMap.addMarker(new MarkerOptions().position(item.getPoint()));
                     final int finalC = c;
                     Glide.with(getApplicationContext())

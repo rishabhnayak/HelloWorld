@@ -1,9 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2ECC71</color>
-    <color name="colorPrimaryDark">#b42ecc71</color>
-    <color name="colorAccent">#F9BF3B</color>
+
+    <!--<color name="colorPrimary">#2ECC71</color>-->
+    <!--<color name="colorPrimaryDark">#b42ecc71</color>-->
+    <!--<color name="colorAccent">#F9BF3B</color>-->
+
+    <!--<color name="colorPrimary">#5A819E</color>-->
+    <!--<color name="colorPrimaryDark">#5A819E</color>-->
+    <!--<color name="colorAccent">#FFE5C4</color>-->
+
+    <!--<color name="colorPrimary">#2196F3</color>-->
+    <!--<color name="colorPrimaryDark">#2196F3</color>-->
+    <!--<color name="colorAccent">#FFEB3B</color>-->
+
+    <!--<color name="colorPrimary">#03A9F4</color>-->
+    <!--<color name="colorPrimaryDark">#03A9F4</color>-->
+    <!--<color name="colorAccent">#00C853</color>-->
+
+
+    <!--<color name="colorPrimary">#5C6BC0</color>-->
+    <!--<color name="colorPrimaryDark">#5C6BC0</color>-->
+    <!--<color name="colorAccent">#5C6BC0</color>-->
+
+    <!--<color name="colorPrimary">#FF8A65</color>-->
+    <!--<color name="colorPrimaryDark">#FF8A65</color>-->
+    <!--<color name="colorAccent">#5C6BC0</color>-->
+
+
+    <color name="colorPrimary">#5C6BC0</color>
+    <color name="colorPrimaryDark">#5C6BC0</color>
+    <color name="colorAccent">#FF8A65</color>
+
     <color name="tbts_pressed">#7f422c64</color>
+
+
     <color name="loo_pre">#fff</color>
     <!--<color name="alternateRoute">#fff</color>-->
     <color name="alternateRoute">#fabbc2c6</color>

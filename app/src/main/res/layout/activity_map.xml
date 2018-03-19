@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
     tools:context="com.MsoftTexas.directionandweather.MapActivity">
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         xmlns:sothree="http://schemas.android.com/apk/res-auto"
@@ -162,6 +163,7 @@ android:visibility="gone"
                         android:layout_gravity="center_horizontal"
                         android:text="clr" />
                 </LinearLayout>
+
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
@@ -182,4 +184,14 @@ android:visibility="gone"
 <include layout="@layout/dragup_panel"></include>
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loading"
+        android:scaleType="centerCrop"
+        android:background="@color/colorAccent"
+        android:layout_centerInParent="true"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        sothree:lottie_rawRes="@raw/postcard"
+        sothree:lottie_autoPlay="true"
+        sothree:lottie_loop="true"/>
 </RelativeLayout>

@@ -18,6 +18,7 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
             <TextView
+                android:textColor="@color/loo_pre"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-thin"
