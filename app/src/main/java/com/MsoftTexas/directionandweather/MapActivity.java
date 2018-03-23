@@ -71,13 +71,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback
         ,View.OnClickListener
         {
     LottieAnimationView loading;
+    TextView loading_text;
     int selectedroute=0;
     String timezone;
     int mYear,mMonth,mDay, mHour, mMinute;
@@ -85,6 +85,7 @@ public class MapActivity extends AppCompatActivity implements
     Boolean weatherloaded=false, routeloaded=false;
     TextView time;
     FloatingActionButton date;
+    TextView date1;
     static TextView src,dstn;
     Snackbar snackbar;
     SlidingUpPanelLayout slidingUpPanelLayout;
@@ -109,16 +110,19 @@ public class MapActivity extends AppCompatActivity implements
 
     SharedPreferences sd;
 
-            RecyclerView link;
+ //   private static final int[] COLORS = new int[]{R.color.colorPrimaryDark,R.color.colorPrimary,R.color.colorPrimary,R.color.colorPrimary,R.color.colorPrimary};
+
+
+    RecyclerView link;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        Toast toast = Toast.makeText(this, "Please Give Feedback...", Toast.LENGTH_LONG);
-        View view = toast.getView();
-        view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        view.setBackground(getResources().getDrawable(R.drawable.loading_background));
-        toast.show();
+//        Toast toast = Toast.makeText(this, "Please Give Feedback...", Toast.LENGTH_LONG);
+//        View view = toast.getView();
+//        view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+//        view.setBackground(getResources().getDrawable(R.drawable.loading_background));
+//        toast.show();
         sd = this.getSharedPreferences("com.MsoftTexas.directionandweather", Context.MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -128,6 +132,8 @@ public class MapActivity extends AppCompatActivity implements
         RequestDirection=findViewById(R.id.request_direction);
 //loading.................lottie
 loading=findViewById(R.id.loading);
+loading_text=findViewById(R.id.loading_text);
+loading_text.setVisibility(View.GONE);
 loading.setVisibility(View.GONE);
         //setting title null
         getSupportActionBar().setTitle("");
@@ -146,7 +152,7 @@ loading.setVisibility(View.GONE);
 
         time = findViewById(R.id.time);
         date = findViewById(R.id.date);
-
+        date1=findViewById(R.id.date1);
 
 
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
@@ -185,7 +191,6 @@ loading.setVisibility(View.GONE);
 
 
         final Calendar c = Calendar.getInstance();
-        timezone=c.getTimeZone().getID();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
@@ -193,16 +198,7 @@ loading.setVisibility(View.GONE);
         mMinute = c.get(Calendar.MINUTE);
         jstart_date_millis=c.getTimeInMillis()-((mHour*60+mMinute)*60*1000);
         jstart_time_millis=(mHour*60+mMinute)*60*1000;
-//        date.setText(mDay+"-"+(mMonth+1)+"-"+mYear);
-
-
-
- //       TimeZone tz = c.getTimeZone();
- //       System.out.println("timezone id:"+tz.getID());
- //        System.out.println("timezone disp name:"+tz.getDisplayName());
-
-
-
+        date1.setText(mDay+"-"+(mMonth+1)+"-"+mYear);
 
         String sHour = mHour < 10 ? "0" + mHour : "" + mHour;
         String sMinute = mMinute < 10 ? "0" + mMinute : "" + mMinute;
@@ -322,7 +318,7 @@ loading.setVisibility(View.GONE);
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-
+        //ON     googleMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(36,41),4) );
 
         googleMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener()
         {
@@ -342,9 +338,10 @@ loading.setVisibility(View.GONE);
                 selectedroute=val;
                 polylines.get(val).setColor(getResources().getColor(R.color.seletedRoute));
                 polylines.get(val).setWidth(18);
-
+    //            val=val==0?directionapi.getRoutes().size()-1:val;
                 distance.setText("("+directionapi.getRoutes().get(val).getLegs().get(0).getDistance().getText()+")");
                 duration.setText(directionapi.getRoutes().get(val).getLegs().get(0).getDuration().getText());
+                //do something with polyline
                 new MapActivity.apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
@@ -470,6 +467,7 @@ loading.setVisibility(View.GONE);
 //            snackbar= Snackbar.make(RequestDirection, "loading...",30000);
 //            snackbar.show();
             loading.setVisibility(View.VISIBLE);
+            loading_text.setVisibility(View.VISIBLE);
             slidingUpPanelLayout.setAlpha(0.5f);
            // loading.setProgress(0);
             loading.setSpeed(1f);
@@ -521,7 +519,7 @@ loading.setVisibility(View.GONE);
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                     //   date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        date1.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                         Calendar cal = Calendar.getInstance();
                         cal.set(Calendar.DAY_OF_MONTH,dayOfMonth);
                         cal.set(Calendar.MONTH, monthOfYear);
@@ -599,6 +597,7 @@ loading.setVisibility(View.GONE);
                     @Override
                     public void run(){
                         loading.setVisibility(View.GONE);
+                        loading_text.setVisibility(View.GONE);
                         slidingUpPanelLayout.setAlpha(1);
                     }
                 }, 1500);
@@ -606,6 +605,7 @@ loading.setVisibility(View.GONE);
             }else{
 //                snackbar.setText("loading weather...");
                 loading.setVisibility(View.VISIBLE);
+                loading_text.setVisibility(View.VISIBLE);
                 slidingUpPanelLayout.setAlpha(0.5f);
              //   loading.setProgress(0);
                 loading.setSpeed(1f);
@@ -619,6 +619,7 @@ loading.setVisibility(View.GONE);
                     @Override
                     public void run(){
                         loading.setVisibility(View.GONE);
+                        loading_text.setVisibility(View.GONE);
                         slidingUpPanelLayout.setAlpha(1);
                     }
                 }, 1500);
@@ -740,9 +741,9 @@ loading.setVisibility(View.GONE);
             System.out.println("weather data call has started........");
                weatherloaded=true;
             if(routeloaded){
-                snackbar.dismiss();
+//                snackbar.dismiss();
             }else{
-                snackbar.setText("loading route...");
+//                snackbar.setText("loading route...");
             }
             System.out.println("here is the list of intermediate Points:");
 
@@ -753,6 +754,7 @@ loading.setVisibility(View.GONE);
                     c++;
                     System.out.println(new Gson().toJson(item));
                     loading.setVisibility(View.GONE);
+                    loading_text.setVisibility(View.GONE);
                     slidingUpPanelLayout.setAlpha(1);
                     //   googleMap.addMarker(new MarkerOptions().position(item.getPoint()));
                     final int finalC = c;
@@ -772,6 +774,9 @@ loading.setVisibility(View.GONE);
 
                                 @Override
                                 public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                                googleMap.addMarker(new MarkerOptions()
+//                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_default_logo))
+//                                        .position(place.getLatLng()));
                                     e.printStackTrace();
                                 }
                             });
@@ -787,6 +792,7 @@ loading.setVisibility(View.GONE);
                     c++;
                     System.out.println(new Gson().toJson(mStep));
                     loading.setVisibility(View.GONE);
+                    loading_text.setVisibility(View.GONE);
                     slidingUpPanelLayout.setAlpha(1);
                     //   googleMap.addMarker(new MarkerOptions().position(item.getPoint()));
                     final int finalC = c;
@@ -806,16 +812,19 @@ loading.setVisibility(View.GONE);
 
                                 @Override
                                 public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                                googleMap.addMarker(new MarkerOptions()
+//                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_default_logo))
+//                                        .position(place.getLatLng()));
                                     e.printStackTrace();
-                                }});
+                                }
+                            });
                 }
 
-            }else{
-            System.out.println("api data is null or api.getlist is null");
-        }
+            }else {
+                System.out.println("api data is null or api.getlist is null");
+            }
 
-
-    }
+            }
 
         @Override
         protected Apidata doInBackground(Object[] objects) {
@@ -849,15 +858,15 @@ loading.setVisibility(View.GONE);
 //                        +"&jstime="+(jstart_date_millis+jstart_time_millis)
 
 
-                     HttpGet request=new HttpGet("http://392de4fe.ngrok.io/_ah/api/myapi/v1/wdata?" +
-                             "olat="+origin.latitude +
-                             "&olng="+origin.longitude +
-                             "&dlat="+destination.latitude +
-                             "&dlng="+destination.longitude +
-                             "&route="+selectedroute +
-                             "&interval="+interval +
-                             "&tz=" +timezone.replace("/","%2F") +
-                             "&jstime="+(jstart_date_millis+jstart_time_millis)
+                HttpGet request=new HttpGet("http://392de4fe.ngrok.io/_ah/api/myapi/v1/wdata?" +
+                        "olat="+origin.latitude +
+                        "&olng="+origin.longitude +
+                        "&dlat="+destination.latitude +
+                        "&dlng="+destination.longitude +
+                        "&route="+selectedroute +
+                        "&interval="+interval +
+                        "&tz=" +timezone.replace("/","%2F") +
+                        "&jstime="+(jstart_date_millis+jstart_time_millis)
                 );
                 BufferedReader rd=null;
                 try {

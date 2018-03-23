@@ -27,7 +27,46 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:context=".MapsActivity" />
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/date"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toStartOf="@+id/date"
+                    sothree:cardCornerRadius="7dp"
+                    sothree:cardElevation="5dp">
+
+                    <LinearLayout
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="1dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="1dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Date"
+                        android:textSize="9sp" />
+
+                        <TextView
+                            android:id="@+id/date1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12-12-12"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
 <android.support.v7.widget.CardView
+    android:id="@+id/srcdstcard"
     sothree:cardCornerRadius="10dp"
     android:layout_margin="10dp"
     sothree:cardElevation="4dp"
@@ -186,13 +225,28 @@ android:visibility="gone"
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
     <com.airbnb.lottie.LottieAnimationView
         android:elevation="16dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:id="@+id/loading"
-        android:scaleType="centerCrop"
+        android:scaleType="centerInside"
         android:background="@drawable/loading_background"
         android:layout_centerInParent="true"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        sothree:lottie_colorFilter="@color/colorAccent"
         sothree:lottie_rawRes="@raw/postcard"
         sothree:lottie_autoPlay="true"
         sothree:lottie_loop="true"/>
+
+    <TextView
+        android:id="@+id/loading_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/loading"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="88dp"
+        android:text="loading..."
+        android:textAllCaps="true"
+        android:textColor="#ffffff"
+        android:textSize="25sp" />
 </RelativeLayout>
