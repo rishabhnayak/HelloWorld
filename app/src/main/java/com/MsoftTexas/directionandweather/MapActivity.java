@@ -7,8 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +26,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -34,6 +38,7 @@ import com.MsoftTexas.directionandweather.Models.Apidata;
 import com.MsoftTexas.directionandweather.Models.Item;
 import com.MsoftTexas.directionandweather.Models.MStep;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -72,13 +77,14 @@ public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback
         ,View.OnClickListener
         {
-
+    LottieAnimationView loading;
     int selectedroute=0;
     String timezone;
     int mYear,mMonth,mDay, mHour, mMinute;
     static long interval=50000;
     Boolean weatherloaded=false, routeloaded=false;
-    TextView time, date;
+    TextView time;
+    FloatingActionButton date;
     static TextView src,dstn;
     Snackbar snackbar;
     SlidingUpPanelLayout slidingUpPanelLayout;
@@ -108,7 +114,11 @@ public class MapActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
+        Toast toast = Toast.makeText(this, "Please Give Feedback...", Toast.LENGTH_LONG);
+        View view = toast.getView();
+        view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        view.setBackground(getResources().getDrawable(R.drawable.loading_background));
+        toast.show();
         sd = this.getSharedPreferences("com.MsoftTexas.directionandweather", Context.MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -116,7 +126,11 @@ public class MapActivity extends AppCompatActivity implements
         src =findViewById(R.id.autocomplete_source);
         dstn=findViewById(R.id.autocomplete_destination);
         RequestDirection=findViewById(R.id.request_direction);
-
+//loading.................lottie
+loading=findViewById(R.id.loading);
+loading.setVisibility(View.GONE);
+        //setting title null
+        getSupportActionBar().setTitle("");
 
 //sliding up layout
         slidingUpPanelLayout=findViewById(R.id.sliding_layout);
@@ -179,7 +193,7 @@ public class MapActivity extends AppCompatActivity implements
         mMinute = c.get(Calendar.MINUTE);
         jstart_date_millis=c.getTimeInMillis()-((mHour*60+mMinute)*60*1000);
         jstart_time_millis=(mHour*60+mMinute)*60*1000;
-        date.setText(mDay+"-"+(mMonth+1)+"-"+mYear);
+//        date.setText(mDay+"-"+(mMonth+1)+"-"+mYear);
 
 
 
@@ -253,25 +267,49 @@ public class MapActivity extends AppCompatActivity implements
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent=new Intent(getApplicationContext(),SettingsActivity.class);
-            startActivity(intent);
-            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.km20:
+                if (item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+               // displayToast("One Selected");
+                MapActivity.interval=20000;
+                requestDirection();
+                return true;
+            case R.id.km30:
+                if (item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+                MapActivity.interval=30000;
+                requestDirection();
+                Toast.makeText(this, "30km", Toast.LENGTH_SHORT).show();
+               // displayToast("Two Selected");
+                return true;
+            case R.id.km40:
+                if (item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+                MapActivity.interval=40000;
+                requestDirection();
+               // displayToast("Three Selected");
+                return true;
+            case R.id.km50:
+                if (item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+                MapActivity.interval=50000;
+                requestDirection();
+                //displayToast("Four Selected");
+                return true;
+            case R.id.action_retry:
+                requestDirection();
+                Toast.makeText(this, "Retrying...", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_clr:
+                Toast.makeText(this, "clear", Toast.LENGTH_SHORT).show();
+                recreate();
+                return true;
+                default:
+                return super.onOptionsItemSelected(item);
         }
-        else if (id==R.id.action_retry){
-            requestDirection();
-            Toast.makeText(this, "Retrying...", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (id==R.id.action_clr){
-            Toast.makeText(this, "clear", Toast.LENGTH_SHORT).show();
-            recreate();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -429,8 +467,13 @@ public class MapActivity extends AppCompatActivity implements
 
         if(origin!=null && destination!=null) {
             googleMap.clear();
-            snackbar= Snackbar.make(RequestDirection, "loading...",30000);
-            snackbar.show();
+//            snackbar= Snackbar.make(RequestDirection, "loading...",30000);
+//            snackbar.show();
+            loading.setVisibility(View.VISIBLE);
+            slidingUpPanelLayout.setAlpha(0.5f);
+           // loading.setProgress(0);
+            loading.setSpeed(1f);
+
             originMarker=googleMap.addMarker(new MarkerOptions().position(origin).icon(BitmapDescriptorFactory.fromResource(R.drawable.pinb)));
             originMarker.setDraggable(true);
             originMarker.setTitle("source");
@@ -478,7 +521,7 @@ public class MapActivity extends AppCompatActivity implements
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                     //   date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                         Calendar cal = Calendar.getInstance();
                         cal.set(Calendar.DAY_OF_MONTH,dayOfMonth);
                         cal.set(Calendar.MONTH, monthOfYear);
@@ -549,13 +592,38 @@ public class MapActivity extends AppCompatActivity implements
 
             System.out.println("here is polyline : "+apidata.getRoutes().get(0).getOverview_polyline().getPoints());
             if(weatherloaded){
-                snackbar.dismiss();
+//                snackbar.dismiss();
+                Handler handler = new Handler();
+
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        loading.setVisibility(View.GONE);
+                        slidingUpPanelLayout.setAlpha(1);
+                    }
+                }, 1500);
+
             }else{
-                snackbar.setText("loading weather...");
+//                snackbar.setText("loading weather...");
+                loading.setVisibility(View.VISIBLE);
+                slidingUpPanelLayout.setAlpha(0.5f);
+             //   loading.setProgress(0);
+                loading.setSpeed(1f);
             }
 
             System.out.println("here is the route data :\n"+new Gson().toJson(apidata));
+            if (new Gson().toJson(apidata)!=null){
+                Handler handler = new Handler();
 
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        loading.setVisibility(View.GONE);
+                        slidingUpPanelLayout.setAlpha(1);
+                    }
+                }, 1500);
+
+            }
             System.out.println("direction success.............babes.......");
             polylines = new ArrayList<>();
             //add route(s) to the map.
@@ -684,6 +752,8 @@ public class MapActivity extends AppCompatActivity implements
                 for(final Item item:apidata.getItems()) {
                     c++;
                     System.out.println(new Gson().toJson(item));
+                    loading.setVisibility(View.GONE);
+                    slidingUpPanelLayout.setAlpha(1);
                     //   googleMap.addMarker(new MarkerOptions().position(item.getPoint()));
                     final int finalC = c;
                     Glide.with(getApplicationContext())
@@ -716,6 +786,8 @@ public class MapActivity extends AppCompatActivity implements
                 for(final MStep mStep:apidata.getSteps()) {
                     c++;
                     System.out.println(new Gson().toJson(mStep));
+                    loading.setVisibility(View.GONE);
+                    slidingUpPanelLayout.setAlpha(1);
                     //   googleMap.addMarker(new MarkerOptions().position(item.getPoint()));
                     final int finalC = c;
                     Glide.with(getApplicationContext())

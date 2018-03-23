@@ -3,7 +3,7 @@
     android:shape="line">
 
     <stroke
-        android:color="#616161"
+        android:color="@color/cardview_dark_background"
         android:dashWidth="10px"
         android:dashGap="10px"
         android:width="0.1dp"/>

@@ -42,8 +42,10 @@ public class SearchPlace extends AppCompatActivity {
         setContentView(R.layout.activity_search_place);
         sd = this.getSharedPreferences("com.MsoftTexas.directionandweather", Context.MODE_PRIVATE);
         mAutocompleteViewD =findViewById(R.id.as);
+     //   mAutocompleteViewD.setBackground(getResources().getDrawable(R.drawable.recta));
            
         recent_listview =findViewById(R.id.listviewRecentSearch);
+        recent_listview.setDividerHeight(0);
 //        mAutocompleteViewS.setOnItemClickListener(mAutocompleteClickListenerS);
         mAutocompleteViewD.setOnItemClickListener(mAutocompleteClickListenerD);
 
