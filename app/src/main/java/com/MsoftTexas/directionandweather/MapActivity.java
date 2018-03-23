@@ -66,6 +66,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback
@@ -73,6 +74,7 @@ public class MapActivity extends AppCompatActivity implements
         {
 
     int selectedroute=0;
+    String timezone;
     int mYear,mMonth,mDay, mHour, mMinute;
     static long interval=50000;
     Boolean weatherloaded=false, routeloaded=false;
@@ -101,10 +103,7 @@ public class MapActivity extends AppCompatActivity implements
 
     SharedPreferences sd;
 
- //   private static final int[] COLORS = new int[]{R.color.colorPrimaryDark,R.color.colorPrimary,R.color.colorPrimary,R.color.colorPrimary,R.color.colorPrimary};
-
-
-    RecyclerView link;
+            RecyclerView link;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,6 +171,7 @@ public class MapActivity extends AppCompatActivity implements
 
 
         final Calendar c = Calendar.getInstance();
+        timezone=c.getTimeZone().getID();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
@@ -180,6 +180,15 @@ public class MapActivity extends AppCompatActivity implements
         jstart_date_millis=c.getTimeInMillis()-((mHour*60+mMinute)*60*1000);
         jstart_time_millis=(mHour*60+mMinute)*60*1000;
         date.setText(mDay+"-"+(mMonth+1)+"-"+mYear);
+
+
+
+ //       TimeZone tz = c.getTimeZone();
+ //       System.out.println("timezone id:"+tz.getID());
+ //        System.out.println("timezone disp name:"+tz.getDisplayName());
+
+
+
 
         String sHour = mHour < 10 ? "0" + mHour : "" + mHour;
         String sMinute = mMinute < 10 ? "0" + mMinute : "" + mMinute;
@@ -275,7 +284,7 @@ public class MapActivity extends AppCompatActivity implements
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        //ON     googleMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(36,41),4) );
+
 
         googleMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener()
         {
@@ -292,13 +301,13 @@ public class MapActivity extends AppCompatActivity implements
                        val=k;
                    }
                 }
-
+                selectedroute=val;
                 polylines.get(val).setColor(getResources().getColor(R.color.seletedRoute));
                 polylines.get(val).setWidth(18);
-    //            val=val==0?directionapi.getRoutes().size()-1:val;
+
                 distance.setText("("+directionapi.getRoutes().get(val).getLegs().get(0).getDistance().getText()+")");
                 duration.setText(directionapi.getRoutes().get(val).getLegs().get(0).getDuration().getText());
-                //do something with polyline
+                new MapActivity.apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -439,7 +448,7 @@ public class MapActivity extends AppCompatActivity implements
 //                    .waypoints(origin,destination)
 //                    .build()
 //                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-//             new MapActivity.apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+             new MapActivity.apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }else{
             Toast.makeText(getApplicationContext(),"origin or destination null", Toast.LENGTH_LONG).show();
         }
@@ -693,9 +702,6 @@ public class MapActivity extends AppCompatActivity implements
 
                                 @Override
                                 public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                                googleMap.addMarker(new MarkerOptions()
-//                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_default_logo))
-//                                        .position(place.getLatLng()));
                                     e.printStackTrace();
                                 }
                             });
@@ -728,17 +734,16 @@ public class MapActivity extends AppCompatActivity implements
 
                                 @Override
                                 public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                                googleMap.addMarker(new MarkerOptions()
-//                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_default_logo))
-//                                        .position(place.getLatLng()));
                                     e.printStackTrace();
-                                }
-                            });
+                                }});
                 }
 
-            }
-
+            }else{
+            System.out.println("api data is null or api.getlist is null");
         }
+
+
+    }
 
         @Override
         protected Apidata doInBackground(Object[] objects) {
@@ -751,14 +756,37 @@ public class MapActivity extends AppCompatActivity implements
                 HttpResponse response = null;
 
                 //nbsc-1518068960369.appspot.com
-                System.out.println("here is the fk url : "+"http://c1789636.ngrok.io/_ah/api/myapi/v1/wdata?olat="
-                        +origin.latitude+"&olng="+origin.longitude
+//                System.out.println("here is the fk url : "+"http://c1789636.ngrok.io/_ah/api/myapi/v1/wdata?olat="
+//                        +origin.latitude+"&olng="+origin.longitude
+//                        +"&dlat="+destination.latitude+"&dlng="+destination.longitude
+//                        +"&jstime="+(jstart_date_millis+jstart_time_millis));
+
+                System.out.println("http://a6c754c6.ngrok.io/_ah/api/myapi/v1/wdata?"
+                        +"olat="+origin.latitude+"&olng="+origin.longitude
                         +"&dlat="+destination.latitude+"&dlng="+destination.longitude
+                        +"&route="+selectedroute
+                        +"&interval="+interval
+                        +"&tz="+timezone
                         +"&jstime="+(jstart_date_millis+jstart_time_millis));
-                HttpGet request = new HttpGet("https://nbsc-1518068960369.appspot.com/_ah/api/myapi/v1/wdata?olat="
-                        +origin.latitude+"&olng="+origin.longitude
-                        +"&dlat="+destination.latitude+"&dlng="+destination.longitude
-                        +"&jstime="+(jstart_date_millis+jstart_time_millis));
+//                HttpGet request = new HttpGet("http://a6c754c6.ngrok.io/_ah/api/myapi/v1/wdata?"
+//                        +"olat="+origin.latitude+"&olng="+origin.longitude
+//                        +"&dlat="+destination.latitude+"&dlng="+destination.longitude
+//                        +"&route="+selectedroute
+//                        +"&interval"+interval
+//                        +"&tz="+timezone
+//                        +"&jstime="+(jstart_date_millis+jstart_time_millis)
+
+
+                     HttpGet request=new HttpGet("http://392de4fe.ngrok.io/_ah/api/myapi/v1/wdata?" +
+                             "olat="+origin.latitude +
+                             "&olng="+origin.longitude +
+                             "&dlat="+destination.latitude +
+                             "&dlng="+destination.longitude +
+                             "&route="+selectedroute +
+                             "&interval="+interval +
+                             "&tz=" +timezone.replace("/","%2F") +
+                             "&jstime="+(jstart_date_millis+jstart_time_millis)
+                );
                 BufferedReader rd=null;
                 try {
                     response = client.execute(request);
@@ -767,8 +795,6 @@ public class MapActivity extends AppCompatActivity implements
                     return new Gson().fromJson(rd,Apidata.class);
                 } catch (Exception e) {
                     System.out.println("error : " + e.toString());
-
-
                     String line="";
                     while ((line=rd.readLine())!=null){
                         System.out.println(line+"\n");

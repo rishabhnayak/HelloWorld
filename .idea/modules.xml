@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-      <module fileurl="file://C:\Users\RAJA\Documents\GitHub\Weatherapp\HelloWorld.iml" filepath="C:\Users\RAJA\Documents\GitHub\Weatherapp\HelloWorld.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Weatherapp.iml" filepath="$PROJECT_DIR$/Weatherapp.iml" />
-      <module fileurl="file://C:\Users\kamlesh\Documents\GitHub\HelloWorld\Weatherapp.iml" filepath="C:\Users\kamlesh\Documents\GitHub\HelloWorld\Weatherapp.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/HelloWorld.iml" filepath="$PROJECT_DIR$/HelloWorld.iml" />
->>>>>>> parent of b0a847d... lottie test-Success
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\kamlesh\Documents\GitHub\HelloWorld\weatherdirection3.iml" filepath="C:\Users\kamlesh\Documents\GitHub\HelloWorld\weatherdirection3.iml" />
     </modules>
   </component>
 </project>
