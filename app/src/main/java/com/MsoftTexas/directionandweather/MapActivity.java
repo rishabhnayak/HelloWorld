@@ -77,6 +77,10 @@ public class MapActivity extends AppCompatActivity implements
         ,View.OnClickListener
         {
     LottieAnimationView loading;
+            List<PolylineOptions> polylineOptionsList;
+            private List<Marker> markersInterm = new ArrayList<>();
+            private List<Marker> markersSteps = new ArrayList<>();
+
     TextView loading_text;
     int selectedroute=0;
     String timezone;
@@ -191,6 +195,7 @@ loading.setVisibility(View.GONE);
 
 
         final Calendar c = Calendar.getInstance();
+        timezone=c.getTimeZone().getID();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
@@ -326,23 +331,35 @@ loading.setVisibility(View.GONE);
             public void onPolylineClick(Polyline polyline)
             {
 
+
                 int val=0;
                 for(int k=0;k<polylines.size();k++){
-                   if(!polylines.get(k).equals(polyline)){
-                       polylines.get(k).setColor( getResources().getColor(R.color.alternateRoute));
-                       polylines.get(k).setWidth(15);
-                   }else{
-                       val=k;
-                   }
+                    polylines.get(k).remove();
+                    if(!polylines.get(k).equals(polyline)){
+//                       polylines.get(k).setColor( getResources().getColor(R.color.alternateRoute));
+//                       polylines.get(k).setWidth(15);
+                        polylineOptionsList.get(k).color(getResources().getColor(R.color.alternateRoute));
+                        polylineOptionsList.get(k).width(15);
+                        Polyline p=googleMap.addPolyline(polylineOptionsList.get(k));
+                        p.setClickable(true);
+                        polylines.set(k,p);
+                    }else{
+                        val=k;
+                    }
+
                 }
                 selectedroute=val;
-                polylines.get(val).setColor(getResources().getColor(R.color.seletedRoute));
-                polylines.get(val).setWidth(18);
-    //            val=val==0?directionapi.getRoutes().size()-1:val;
+//                polylines.get(val).setColor(getResources().getColor(R.color.seletedRoute));
+//                polylines.get(val).setWidth(18);
+                polylineOptionsList.get(val).color(getResources().getColor(R.color.seletedRoute));
+                polylineOptionsList.get(val).width(15);
+                Polyline selectedPolyline=googleMap.addPolyline(polylineOptionsList.get(val));
+                selectedPolyline.setClickable(true);
+                polylines.set(val,selectedPolyline);
+
                 distance.setText("("+directionapi.getRoutes().get(val).getLegs().get(0).getDistance().getText()+")");
                 duration.setText(directionapi.getRoutes().get(val).getLegs().get(0).getDuration().getText());
-                //do something with polyline
-                new MapActivity.apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -367,7 +384,6 @@ loading.setVisibility(View.GONE);
 
             }});
 
-
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -376,41 +392,54 @@ loading.setVisibility(View.GONE);
 
                 try{
 
-                    Item item= apiData.getItems().get(Integer.parseInt(marker.getTag().toString()));
+                    if(marker.getTag().toString().startsWith("I")) {
 
-                    AlertDialog.Builder builderSingle = new AlertDialog.Builder(MapActivity.this);
-
-                    builderSingle.setTitle(
-                            item.getLname().substring(0,20)+ "...\n Arr :"+item.getArrtime()+"   Dist :"+item.getDistance()
-                    );
+                        Item item = apiData.getItems().get(Integer.parseInt(marker.getTag().toString().replace("I","")));
 
 
+                        AlertDialog.Builder builderSingle = new AlertDialog.Builder(MapActivity.this);
+
+                        builderSingle.setTitle(
+                                item.getLname().substring(0, 20) + "...\n Arr :" + item.getArrtime() + "   Dist :" + item.getDistance()
+                        );
+                        final ArrrayAdapter Adapter = new ArrrayAdapter(MapActivity.this, item.getWlist());
+
+                        final ListView modeList = new ListView(MapActivity.this);
+                        modeList.setAdapter(Adapter);
 
 
-                    //              System.out.println("size of list : " + forcastdata.size());
-                    final ArrrayAdapter Adapter = new ArrrayAdapter(MapActivity.this,item.getWlist());
+                        builderSingle.setView(modeList);
+                        builderSingle.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        builderSingle.show();
+                    }else if(marker.getTag().toString().startsWith("S")){
+                        MStep step = apiData.getSteps().get(Integer.parseInt(marker.getTag().toString().replace("S","")));
+                        AlertDialog.Builder builderSingle = new AlertDialog.Builder(MapActivity.this);
+
+                        builderSingle.setTitle(
+                                step.getStep().getManeuver() + "...\n Arr :" + step.getArrtime() + "   Dist :" + step.getAft_distance()
+                        );
+                        final ArrrayAdapter Adapter = new ArrrayAdapter(MapActivity.this, step.getWlist());
+
+                        final ListView modeList = new ListView(MapActivity.this);
+                        modeList.setAdapter(Adapter);
 
 
+                        builderSingle.setView(modeList);
+                        builderSingle.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
 
-                    final ListView modeList = new ListView(MapActivity.this);
-                    //  String[] stringArray = new String[] { "Bright Mode", "Normal Mode" };
-                    //ArrayAdapter<String> modeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, stringArray);
-                    modeList.setAdapter(Adapter);
-
-//             builder.setView(modeList);
-//             final Dialog dialog = builder.create();
-//
-//             dialog.show();
-
-                    builderSingle.setView(modeList);
-                    builderSingle.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    builderSingle.show();
+                        builderSingle.show();
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -419,6 +448,7 @@ loading.setVisibility(View.GONE);
                 return false;
             }
         });
+
 
 
 
@@ -481,7 +511,7 @@ loading.setVisibility(View.GONE);
             dstnMarker.setTitle("destination");
 
 
-              new routing().execute();
+              new routing().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 //             new Routing.Builder()
 //                    .travelMode(Routing.TravelMode.DRIVING)
 //                    .withListener(MapActivity.this)
@@ -489,7 +519,7 @@ loading.setVisibility(View.GONE);
 //                    .waypoints(origin,destination)
 //                    .build()
 //                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-             new MapActivity.apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+             new apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }else{
             Toast.makeText(getApplicationContext(),"origin or destination null", Toast.LENGTH_LONG).show();
         }
@@ -637,16 +667,18 @@ loading.setVisibility(View.GONE);
 
 
 
+            polylineOptionsList = new ArrayList<>();
             System.out.println("route options : "+apidata.getRoutes().size());
+            Polyline selectedPolyline = null;
             if(apidata.getRoutes().size()>0) {
                 List<LatLng> lst = PolyUtil.decode(apidata.getRoutes().get(0).getOverview_polyline().getPoints());
                 PolylineOptions polyOptions = new PolylineOptions();
                 polyOptions.color(getResources().getColor(R.color.seletedRoute));
                 polyOptions.width(18);
                 polyOptions.addAll(lst);
-                Polyline polyline = googleMap.addPolyline(polyOptions);
-                polylines.add(polyline);
-                polyline.setClickable(true);
+
+                polylines.add(selectedPolyline);
+                polylineOptionsList.add(polyOptions);
             }
 
             if(apidata.getRoutes().size()>1) {
@@ -657,17 +689,22 @@ loading.setVisibility(View.GONE);
 
                     PolylineOptions polyOptions = new PolylineOptions();
 
-                        polyOptions.color(getResources().getColor(R.color.alternateRoute));
-                        polyOptions.width(15);
+                    polyOptions.color(getResources().getColor(R.color.alternateRoute));
+                    polyOptions.width(15);
 
 
                     polyOptions.addAll(lst);
                     Polyline polyline = googleMap.addPolyline(polyOptions);
                     polylines.add(polyline);
-
                     polyline.setClickable(true);
-
+                    polylineOptionsList.add(polyOptions);
                 }
+            }
+
+            if(polylineOptionsList!=null && polylineOptionsList.get(0)!=null) {
+                selectedPolyline=googleMap.addPolyline(polylineOptionsList.get(0));
+                polylines.set(0,selectedPolyline);
+                selectedPolyline.setClickable(true);
             }
 
             setCameraWithCoordinationBounds(route);
@@ -768,8 +805,8 @@ loading.setVisibility(View.GONE);
                                     Marker marker = googleMap.addMarker(new MarkerOptions()
                                             .icon(BitmapDescriptorFactory.fromBitmap(resource))
                                             .position(new LatLng(item.getPoint().getLatitude(), item.getPoint().getLongitude())));
-                                    marker.setTag(finalC);
-                                    markers.add(marker);
+                                    marker.setTag("I"+finalC);
+                                    markersInterm.add(marker);
                                 }
 
                                 @Override
@@ -806,8 +843,8 @@ loading.setVisibility(View.GONE);
                                     Marker marker = googleMap.addMarker(new MarkerOptions()
                                             .icon(BitmapDescriptorFactory.fromBitmap(resource))
                                             .position(new LatLng(mStep.getStep().getStart_location().getLat(),mStep.getStep().getStart_location().getLng())));
-                                    marker.setTag(finalC);
-                                    markers.add(marker);
+                                    marker.setTag("S"+finalC);
+                                    markersSteps.add(marker);
                                 }
 
                                 @Override
@@ -858,7 +895,7 @@ loading.setVisibility(View.GONE);
 //                        +"&jstime="+(jstart_date_millis+jstart_time_millis)
 
 
-                HttpGet request=new HttpGet("http://392de4fe.ngrok.io/_ah/api/myapi/v1/wdata?" +
+                HttpGet request=new HttpGet("https://nbsc-1518068960369.appspot.com/_ah/api/myapi/v1/wdata?" +
                         "olat="+origin.latitude +
                         "&olng="+origin.longitude +
                         "&dlat="+destination.latitude +
