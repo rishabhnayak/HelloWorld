@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -77,6 +79,10 @@ public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback
         ,View.OnClickListener
         {
+
+    RelativeLayout custom_dialog;
+
+
     LottieAnimationView loading;
             List<PolylineOptions> polylineOptionsList;
             private List<Marker> markersInterm = new ArrayList<>();
@@ -89,8 +95,8 @@ public class MapActivity extends AppCompatActivity implements
     static long interval=50000;
     Boolean weatherloaded=false, routeloaded=false;
     TextView time;
-    CardView date;
-    TextView date1;
+    CardView date_holder;
+    TextView departAt;
     static ImageView go;
     static TextView src,dstn;
     Snackbar snackbar;
@@ -115,8 +121,9 @@ public class MapActivity extends AppCompatActivity implements
     protected GeoDataClient mGeoDataClientS, mGeoDataClientD;
 
     SharedPreferences sd;
+    String[] month={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 
- //   private static final int[] COLORS = new int[]{R.color.colorPrimaryDark,R.color.colorPrimary,R.color.colorPrimary,R.color.colorPrimary,R.color.colorPrimary};
+
 
 
     RecyclerView link;
@@ -124,11 +131,7 @@ public class MapActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-//        Toast toast = Toast.makeText(this, "Please Give Feedback...", Toast.LENGTH_LONG);
-//        View view = toast.getView();
-//        view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-//        view.setBackground(getResources().getDrawable(R.drawable.loading_background));
-//        toast.show();
+
         sd = this.getSharedPreferences("com.MsoftTexas.directionandweather", Context.MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -138,10 +141,11 @@ public class MapActivity extends AppCompatActivity implements
         go=findViewById(R.id.request_direction);
         RequestDirection=findViewById(R.id.request_direction);
 //loading.................lottie
-loading=findViewById(R.id.loading);
-loading_text=findViewById(R.id.loading_text);
-loading_text.setVisibility(View.GONE);
-loading.setVisibility(View.GONE);
+        custom_dialog=findViewById(R.id.custom_dialog);
+        loading=findViewById(R.id.loading);
+        loading_text=findViewById(R.id.loading_text);
+
+
         //setting title null
         getSupportActionBar().setTitle("");
 
@@ -158,8 +162,8 @@ loading.setVisibility(View.GONE);
         duration = findViewById(R.id.duration);
 
         time = findViewById(R.id.time);
-        date = findViewById(R.id.card_date);
-        date1=findViewById(R.id.date1);
+        date_holder = findViewById(R.id.card_date);
+        departAt=findViewById(R.id.date1);
 
 
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
@@ -206,13 +210,13 @@ loading.setVisibility(View.GONE);
         mMinute = c.get(Calendar.MINUTE);
         jstart_date_millis=c.getTimeInMillis()-((mHour*60+mMinute)*60*1000);
         jstart_time_millis=(mHour*60+mMinute)*60*1000;
-        date1.setText(mDay+"-"+(mMonth+1)+"-"+mYear);
+
 
         String sHour = mHour < 10 ? "0" + mHour : "" + mHour;
         String sMinute = mMinute < 10 ? "0" + mMinute : "" + mMinute;
         String curr_time = sHour + ":" + sMinute;
         time.setText(curr_time);
-
+        departAt.setText(curr_time+","+mDay+" "+month[mMonth]+" "+String.valueOf(mYear).substring(2));
         // Set up the 'clear text' button that clears the text in the autocomplete view
         Button clearButton = findViewById(R.id.button_clear);
         clearButton.setOnClickListener(new View.OnClickListener() {
@@ -225,7 +229,7 @@ loading.setVisibility(View.GONE);
 
 
 
-        date.setOnClickListener(new View.OnClickListener() {
+        date_holder.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -362,6 +366,17 @@ loading.setVisibility(View.GONE);
 
                 distance.setText("("+directionapi.getRoutes().get(val).getLegs().get(0).getDistance().getText()+")");
                 duration.setText(directionapi.getRoutes().get(val).getLegs().get(0).getDuration().getText());
+
+                for(int k=0;k<markersSteps.size();k++){
+                    markersSteps.get(k).remove();
+                }
+                for(int k=0;k<markersInterm.size();k++){
+                    markersInterm.get(k).remove();
+                }
+                custom_dialog.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.VISIBLE);
+                loading_text.setVisibility(View.VISIBLE);
+                loading_text.setText("loading weather...");
                 new apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
@@ -490,20 +505,23 @@ loading.setVisibility(View.GONE);
 
 
 
+
     public void requestDirection() {
         apiData=null;
         weatherloaded=false;
         routeloaded=false;
+        markersInterm.clear();
+        markersSteps.clear();
 
         if(origin!=null && destination!=null) {
             googleMap.clear();
-//            snackbar= Snackbar.make(RequestDirection, "loading...",30000);
-//            snackbar.show();
+            custom_dialog.setVisibility(View.VISIBLE);
             loading.setVisibility(View.VISIBLE);
             loading_text.setVisibility(View.VISIBLE);
             slidingUpPanelLayout.setAlpha(0.5f);
            // loading.setProgress(0);
             loading.setSpeed(1f);
+            loading_text.setText("Loading Route");
 
             originMarker=googleMap.addMarker(new MarkerOptions().position(origin).icon(BitmapDescriptorFactory.fromResource(R.drawable.pinb)));
             originMarker.setDraggable(true);
@@ -552,7 +570,7 @@ loading.setVisibility(View.GONE);
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        date1.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        departAt.setText(dayOfMonth + " " + month[monthOfYear] + " " + String.valueOf(year).substring(2));
                         Calendar cal = Calendar.getInstance();
                         cal.set(Calendar.DAY_OF_MONTH,dayOfMonth);
                         cal.set(Calendar.MONTH, monthOfYear);
@@ -587,7 +605,7 @@ loading.setVisibility(View.GONE);
                         String sHour = mHour < 10 ? "0" + mHour : "" + mHour;
                         String sMinute = mMinute < 10 ? "0" + mMinute : "" + mMinute;
                         String set_time = sHour + ":" + sMinute;
-                        time.setText(set_time);
+                        departAt.setText(set_time+","+departAt.getText());
 
                         jstart_time_millis=(mHour*60+mMinute)*60*1000;
 
@@ -623,40 +641,27 @@ loading.setVisibility(View.GONE);
 
             System.out.println("here is polyline : "+apidata.getRoutes().get(0).getOverview_polyline().getPoints());
             if(weatherloaded){
-//                snackbar.dismiss();
-                Handler handler = new Handler();
-
-                handler.postDelayed(new Runnable(){
-                    @Override
-                    public void run(){
-                        loading.setVisibility(View.GONE);
-                        loading_text.setVisibility(View.GONE);
-                        slidingUpPanelLayout.setAlpha(1);
-                    }
-                }, 1500);
-
+                custom_dialog.setVisibility(View.GONE);
             }else{
-//                snackbar.setText("loading weather...");
-                loading.setVisibility(View.VISIBLE);
-                loading_text.setVisibility(View.VISIBLE);
+
+                loading_text.setText("loading weather..");
                 slidingUpPanelLayout.setAlpha(0.5f);
-             //   loading.setProgress(0);
-                loading.setSpeed(1f);
+
             }
 
             System.out.println("here is the route data :\n"+new Gson().toJson(apidata));
             if (new Gson().toJson(apidata)!=null){
-                Handler handler = new Handler();
-
-                handler.postDelayed(new Runnable(){
-                    @Override
-                    public void run(){
-                        loading.setVisibility(View.GONE);
-                        loading_text.setVisibility(View.GONE);
-                        slidingUpPanelLayout.setAlpha(1);
-                    }
-                }, 1500);
-
+//                Handler handler = new Handler();
+//
+//                handler.postDelayed(new Runnable(){
+//                    @Override
+//                    public void run(){
+//                        loading.setVisibility(View.GONE);
+//                        loading_text.setVisibility(View.GONE);
+//
+//                    }
+//                }, 1500);
+                slidingUpPanelLayout.setAlpha(1);
             }
             System.out.println("direction success.............babes.......");
             polylines = new ArrayList<>();
@@ -780,12 +785,11 @@ loading.setVisibility(View.GONE);
         protected void onPostExecute(Apidata apidata) {
             System.out.println("weather data call has started........");
                weatherloaded=true;
-            if(routeloaded){
-//                snackbar.dismiss();
-            }else{
-//                snackbar.setText("loading route...");
-            }
+
             System.out.println("here is the list of intermediate Points:");
+
+
+
 
             apiData=apidata;
             int c=-1;
@@ -864,7 +868,22 @@ loading.setVisibility(View.GONE);
                 System.out.println("api data is null or api.getlist is null");
             }
 
+            if(routeloaded) {
+               new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Do something after 100ms
+                        custom_dialog.setVisibility(View.GONE);
+                    }
+                }, 1000);
+
+            }else{
+
+                custom_dialog.setVisibility(View.VISIBLE);
+                loading_text.setText("loading route...");
             }
+
+          }
 
         @Override
         protected Apidata doInBackground(Object[] objects) {
@@ -877,10 +896,6 @@ loading.setVisibility(View.GONE);
                 HttpResponse response = null;
 
                 //nbsc-1518068960369.appspot.com
-//                System.out.println("here is the fk url : "+"http://c1789636.ngrok.io/_ah/api/myapi/v1/wdata?olat="
-//                        +origin.latitude+"&olng="+origin.longitude
-//                        +"&dlat="+destination.latitude+"&dlng="+destination.longitude
-//                        +"&jstime="+(jstart_date_millis+jstart_time_millis));
 
                 System.out.println("http://a6c754c6.ngrok.io/_ah/api/myapi/v1/wdata?"
                         +"olat="+origin.latitude+"&olng="+origin.longitude

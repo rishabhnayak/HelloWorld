@@ -87,10 +87,27 @@
                         android:layout_gravity="center_horizontal"
                         android:hint="Destination"
                         android:singleLine="true" />
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+
+                            <TextView
+                                android:fontFamily="sans-serif-condensed"
+                                android:textColor="@color/colorPrimary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:paddingLeft="10dp"
+                                android:paddingTop="2dp"
+                                android:layout_margin="5dp"
+                                android:text="Depart At : "
+                                android:textSize="18sp" />
+
                         <android.support.v7.widget.CardView
 
-                            android:layout_marginTop="5dp"
-                            android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:id="@+id/card_date"
                             sothree:cardBackgroundColor="@color/colorAccent"
@@ -111,27 +128,18 @@
                                 android:layout_marginRight="15dp"
                                 android:layout_marginTop="3dp"
                                 android:orientation="horizontal">
-
-                                <TextView
-                                    android:fontFamily="sans-serif-condensed"
-                                    android:textColor="@color/loo_pre"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_horizontal"
-                                    android:text="Start Date : "
-                                    android:textSize="12sp" />
-
                                 <TextView
                                     android:fontFamily="sans-serif-condensed"
                                     android:textColor="@color/loo_pre"
                                     android:id="@+id/date1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="12-12-12"
+                                    android:text="12-12-21"
                                     android:textSize="12sp" />
                             </LinearLayout>
 
                         </android.support.v7.widget.CardView>
+                        </LinearLayout>
                     </LinearLayout>
 
                     <ImageView
@@ -237,31 +245,40 @@ android:visibility="gone"
 <include layout="@layout/dragup_panel"></include>
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
-    <com.airbnb.lottie.LottieAnimationView
-        android:visibility="gone"
-        android:elevation="16dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:id="@+id/loading"
-        android:scaleType="centerInside"
-        android:background="@drawable/loading_background"
-        android:layout_centerInParent="true"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        sothree:lottie_colorFilter="@color/colorAccent"
-        sothree:lottie_rawRes="@raw/postcard"
-        sothree:lottie_autoPlay="true"
-        sothree:lottie_loop="true"/>
 
-    <TextView
-        android:id="@+id/loading_text"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/loading"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="88dp"
-        android:text="loading..."
-        android:textAllCaps="true"
-        android:textColor="#ffffff"
-        android:textSize="25sp" />
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="77dp"
+        android:id="@+id/custom_dialog"
+        android:background="@drawable/loading_background">
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:elevation="16dp"
+            android:scaleType="centerInside"
+            android:visibility="visible"
+            sothree:lottie_autoPlay="true"
+            sothree:lottie_colorFilter="@color/colorAccent"
+            sothree:lottie_loop="true"
+            sothree:lottie_rawRes="@raw/postcard" />
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/loading"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="88dp"
+            android:text="loading..."
+            android:textAllCaps="true"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+    </RelativeLayout>
 </RelativeLayout>
