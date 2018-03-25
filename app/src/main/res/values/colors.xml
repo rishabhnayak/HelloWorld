@@ -13,9 +13,9 @@
     <!--<color name="colorPrimaryDark">#2196F3</color>-->
     <!--<color name="colorAccent">#FFEB3B</color>-->
 
-    <!--<color name="colorPrimary">#03A9F4</color>-->
-    <!--<color name="colorPrimaryDark">#03A9F4</color>-->
-    <!--<color name="colorAccent">#00C853</color>-->
+    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryDark">#03A9F4</color>
+    <color name="colorAccent">#03A9F4</color>
 
 
     <!--<color name="colorPrimary">#5C6BC0</color>-->
@@ -27,9 +27,9 @@
     <!--<color name="colorAccent">#5C6BC0</color>-->
 
 
-    <color name="colorPrimary">#5C6BC0</color>
-    <color name="colorPrimaryDark">#5C6BC0</color>
-    <color name="colorAccent">#FF8A65</color>
+    <!--<color name="colorPrimary">#5C6BC0</color>-->
+    <!--<color name="colorPrimaryDark">#5C6BC0</color>-->
+    <!--<color name="colorAccent">#f365a0ff</color>-->
 
     <color name="tbts_pressed">#7f422c64</color>
 
