@@ -7,7 +7,7 @@
         android:title="retry"
         app:showAsAction="always" />
     <item
-        android:icon="@drawable/clear"
+        android:icon="@drawable/ic_delete_black_24dp"
         android:fontFamily="sans-serif-thin"
         android:id="@+id/action_clr"
         android:title="Clear"
