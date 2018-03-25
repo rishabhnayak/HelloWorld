@@ -16,6 +16,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -88,7 +89,7 @@ public class MapActivity extends AppCompatActivity implements
     static long interval=50000;
     Boolean weatherloaded=false, routeloaded=false;
     TextView time;
-    FloatingActionButton date;
+    CardView date;
     TextView date1;
     static TextView src,dstn;
     Snackbar snackbar;
@@ -155,7 +156,7 @@ loading.setVisibility(View.GONE);
         duration = findViewById(R.id.duration);
 
         time = findViewById(R.id.time);
-        date = findViewById(R.id.date);
+        date = findViewById(R.id.card_date);
         date1=findViewById(R.id.date1);
 
 
