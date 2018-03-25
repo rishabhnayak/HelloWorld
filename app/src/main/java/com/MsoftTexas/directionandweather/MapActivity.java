@@ -91,6 +91,7 @@ public class MapActivity extends AppCompatActivity implements
     TextView time;
     CardView date;
     TextView date1;
+    static ImageView go;
     static TextView src,dstn;
     Snackbar snackbar;
     SlidingUpPanelLayout slidingUpPanelLayout;
@@ -134,6 +135,7 @@ public class MapActivity extends AppCompatActivity implements
 
         src =findViewById(R.id.autocomplete_source);
         dstn=findViewById(R.id.autocomplete_destination);
+        go=findViewById(R.id.request_direction);
         RequestDirection=findViewById(R.id.request_direction);
 //loading.................lottie
 loading=findViewById(R.id.loading);
