@@ -279,32 +279,28 @@ public class MapActivity extends AppCompatActivity implements
         //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
             case R.id.km20:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
+                item.setChecked(true);
                // displayToast("One Selected");
                 MapActivity.interval=20000;
-                requestDirection();
+             //   requestDirection();
                 return true;
             case R.id.km30:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
+                 item.setChecked(true);
                 MapActivity.interval=30000;
-                requestDirection();
+             //   requestDirection();
                 Toast.makeText(this, "30km", Toast.LENGTH_SHORT).show();
                // displayToast("Two Selected");
                 return true;
             case R.id.km40:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
+               item.setChecked(true);
                 MapActivity.interval=40000;
-                requestDirection();
+             //   requestDirection();
                // displayToast("Three Selected");
                 return true;
             case R.id.km50:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
+                item.setChecked(true);
                 MapActivity.interval=50000;
-                requestDirection();
+              //  requestDirection();
                 //displayToast("Four Selected");
                 return true;
             case R.id.action_retry:
@@ -313,6 +309,7 @@ public class MapActivity extends AppCompatActivity implements
                 return true;
             case R.id.action_clr:
                 Toast.makeText(this, "clear", Toast.LENGTH_SHORT).show();
+
                 recreate();
                 return true;
                 default:

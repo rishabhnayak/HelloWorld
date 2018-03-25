@@ -97,15 +97,17 @@ public class SearchPlace extends AppCompatActivity {
                 if(getIntent().getStringExtra("SrcOrDstn").equals("Src")){
 
                     MapActivity.src.setText(recentSearches.get(arg2).getAdress());
-                    MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
+
                     MapActivity.origin=recentSearches.get(arg2).getLatLng();
 
                     if(TextUtils.isEmpty(MapActivity.dstn.getText())){
                         Intent intent=new Intent(SearchPlace.this,SearchPlace.class);
                         intent.putExtra("SrcOrDstn","Dstn");
-                        MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
+
                         startActivity(intent);
 
+                    }else{
+                        MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
                     }
 
                 }else{
@@ -115,9 +117,9 @@ public class SearchPlace extends AppCompatActivity {
                     if(TextUtils.isEmpty(MapActivity.src.getText())){
                         Intent intent=new Intent(SearchPlace.this,SearchPlace.class);
                         intent.putExtra("SrcOrDstn","Src");
-                        MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
                         startActivity(intent);
-
+                    }else{
+                        MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
                     }
                 }
                 finish();
@@ -187,26 +189,25 @@ public class SearchPlace extends AppCompatActivity {
                     if(getIntent().getStringExtra("SrcOrDstn").equals("Src")){
 
                         MapActivity.src.setText(place.getAddress());
-                        MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
                         MapActivity.origin=place.getLatLng();
                         if(TextUtils.isEmpty(MapActivity.dstn.getText())){
                             Intent intent=new Intent(SearchPlace.this,SearchPlace.class);
                             intent.putExtra("SrcOrDstn","Dstn");
-                            MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
                             startActivity(intent);
+                        }else{
+                            MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
                         }
 
                     }else{
 
                         MapActivity.dstn.setText(place.getAddress());
                         MapActivity.destination=place.getLatLng();
-                        MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
                         if(TextUtils.isEmpty(MapActivity.src.getText())){
                             Intent intent=new Intent(SearchPlace.this,SearchPlace.class);
                             intent.putExtra("SrcOrDstn","Src");
-                            MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
                             startActivity(intent);
-
+                        }else{
+                            MapActivity.go.setBackground(getResources().getDrawable(R.drawable.send_blue));
                         }
                     }
                // Intent intent = new Intent(SearchPlace.this, MapActivity.class);
