@@ -515,7 +515,7 @@ public class MapActivity extends AppCompatActivity implements
             custom_dialog.setVisibility(View.VISIBLE);
             loading.setVisibility(View.VISIBLE);
             loading_text.setVisibility(View.VISIBLE);
-            slidingUpPanelLayout.setAlpha(0.5f);
+           // slidingUpPanelLayout.setAlpha(0.5f);
            // loading.setProgress(0);
             loading.setSpeed(1f);
             loading_text.setText("Loading Route");
@@ -640,10 +640,7 @@ public class MapActivity extends AppCompatActivity implements
             if(weatherloaded){
                 custom_dialog.setVisibility(View.GONE);
             }else{
-
                 loading_text.setText("loading weather..");
-                slidingUpPanelLayout.setAlpha(0.5f);
-
             }
 
             System.out.println("here is the route data :\n"+new Gson().toJson(apidata));
