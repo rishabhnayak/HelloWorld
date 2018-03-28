@@ -414,9 +414,12 @@ public class MapActivity extends AppCompatActivity implements
 
                         AlertDialog.Builder builderSingle = new AlertDialog.Builder(MapActivity.this);
 
-                        builderSingle.setTitle(
-                                item.getLname().substring(0, 20) + "...\n Arr :" + item.getArrtime() + "   Dist :" + item.getDistance()
-                        );
+//                        builderSingle.setTitle(
+//                                item.getLname().substring(0, 20) + "...\n Arr :" + item.getArrtime() + "   Dist :" + item.getDistance()
+//                        );
+
+//                        builderSingle.setIcon(R.drawable.ic_swap_calls_black_24dp);
+//                        builderSingle.setTitle(item.getLname().substring(0, 20) + "...");
                         final ArrrayAdapter Adapter = new ArrrayAdapter(MapActivity.this, item.getWlist());
 
                         final ListView modeList = new ListView(MapActivity.this);
@@ -436,9 +439,13 @@ public class MapActivity extends AppCompatActivity implements
                         MStep step = apiData.getSteps().get(Integer.parseInt(marker.getTag().toString().replace("S","")));
                         AlertDialog.Builder builderSingle = new AlertDialog.Builder(MapActivity.this);
 
-                        builderSingle.setTitle(
-                                step.getStep().getManeuver() + "...\n Arr :" + step.getArrtime() + "   Dist :" + step.getAft_distance()
-                        );
+//                        builderSingle.setTitle(
+//                                step.getStep().getManeuver() + "...\n Arr :" + step.getArrtime() + "   Dist :" + step.getAft_distance()
+//                        );
+
+//                        builderSingle.setIcon(R.drawable.ic_swap_calls_black_24dp);
+//                        builderSingle.setTitle(step.getStep().getManeuver() + "...");
+                       // builderSingle.setMessage("Arrival:"+step.getArrtime()+"\n"+"Distance:"+step.getAft_distance()+"\n");
                         final ArrrayAdapter Adapter = new ArrrayAdapter(MapActivity.this, step.getWlist());
 
                         final ListView modeList = new ListView(MapActivity.this);

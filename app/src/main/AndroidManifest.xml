@@ -11,7 +11,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MapActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,7 +24,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDi3B9R9hVpC9YTmOCCz_pCR1BKW3tIRGY" />
 
-        <activity android:name=".SearchPlace" />
+        <activity android:name=".SearchPlace"
+            android:screenOrientation="portrait"/>
         <activity android:name=".SettingsActivity"></activity>
     </application>
 

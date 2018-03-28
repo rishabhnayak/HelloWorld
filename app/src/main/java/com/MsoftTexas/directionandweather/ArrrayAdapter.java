@@ -96,7 +96,7 @@ class ArrrayAdapter extends BaseAdapter {
 //             }else{
 //                 view.setBackgroundColor(Color.LTGRAY);
 //             }
-             holder.temp.setText(itemslist.get(position).getTemp()+"°");
+             holder.temp.setText(itemslist.get(position).getTemp()+"°F");
              // holder.startDate.setText(itemslist.get(position).);
              holder.weather.setText(itemslist.get(position).getWx());
              holder.date.setText(itemslist.get(position).getWtime());
