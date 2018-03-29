@@ -293,11 +293,6 @@ public class MapActivity extends AppCompatActivity implements
 
     }
 
-            @Override
-            protected void onStart() {
-                super.onStart();
-                checkLocationPermission();
-            }
 
             @Override
     public void onMapReady(final GoogleMap googleMap) {
@@ -394,9 +389,9 @@ public class MapActivity extends AppCompatActivity implements
 //                                item.getLname().substring(0, 20) + "...\n Arr :" + item.getArrtime() + "   Dist :" + item.getDistance()
 //                        );
 
-                        builderSingle.setIcon(R.drawable.ic_directions_black_24dp);
+//                        builderSingle.setIcon(R.drawable.ic_directions_black_24dp);
                         builderSingle.setTitle(item.getLname().substring(0, 20) + "...");
-                        builderSingle.setMessage("Arrival:"+item.getArrtime()+"  "+"Distance:"+item.getDistance());
+                        builderSingle.setMessage("Time :"+item.getArrtime()+"  "+"Traveled :"+String.format("%.2f", (Integer.valueOf(item.getDistance().split(" ")[0]))/(float)1000*(0.621371))+" miles");
                         final ArrrayAdapter Adapter = new ArrrayAdapter(MapActivity.this, item.getWlist());
 
                         final ListView modeList = new ListView(MapActivity.this);
@@ -421,8 +416,8 @@ public class MapActivity extends AppCompatActivity implements
 //                        );
 
                         builderSingle.setIcon(R.drawable.ic_directions_black_24dp);
-                        builderSingle.setTitle(step.getStep().getManeuver() + "...");
-                        builderSingle.setMessage("Arrival:"+step.getArrtime()+"  "+"Distance:"+step.getAft_distance());
+                        builderSingle.setTitle(step.getStep().getManeuver());
+                        builderSingle.setMessage("Time :"+step.getArrtime()+"  "+"Traveled :"+String.format("%.2f",step.getAft_distance()/(float)1000*(0.621371))+" miles");
                         final ArrrayAdapter Adapter = new ArrrayAdapter(MapActivity.this, step.getWlist());
 
                         final ListView modeList = new ListView(MapActivity.this);
@@ -484,37 +479,6 @@ public class MapActivity extends AppCompatActivity implements
         });
     }
 
-
-            public boolean checkLocationPermission(){
-                if (ContextCompat.checkSelfPermission(this,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-
-                    // Asking user if explanation is needed
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                        // Show an explanation to the user *asynchronously* -- don't block
-                        // this thread waiting for the user's response! After the user
-                        // sees the explanation, try again to request the permission.
-
-                        //Prompt the user once explanation has been shown
-                        ActivityCompat.requestPermissions(this,
-                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                MY_PERMISSIONS_REQUEST_LOCATION);
-
-
-                    } else {
-                        // No explanation needed, we can request the permission.
-                        ActivityCompat.requestPermissions(this,
-                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                MY_PERMISSIONS_REQUEST_LOCATION);
-                    }
-                    return false;
-                } else {
-                    return true;
-                }
-            }
 
 
 

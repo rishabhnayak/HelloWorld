@@ -31,9 +31,7 @@ class ArrrayAdapter extends BaseAdapter {
    public ArrrayAdapter(Context context, List<Wlist> itemslist) {
        mContext = context;
        this.itemslist = itemslist;
-
        inflater = LayoutInflater.from(mContext);
-
    }
 
     public class ViewHolder {

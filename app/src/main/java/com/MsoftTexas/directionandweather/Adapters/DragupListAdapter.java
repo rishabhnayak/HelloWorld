@@ -54,10 +54,11 @@ public class DragupListAdapter extends RecyclerView.Adapter<DragupListAdapter.Pn
         //     holder.instr.setText(mStep.getStep().getHtml_instructions());
 //        holder.distance.setText("Traveled : "+mStep.getAft_distance()/(long)1000+" km");
 //        holder.arrtime.setText("Start time:"+mStep.getArrtime());
-        holder.distance.setText((long)mStep.getAft_distance()/(long)1000+" km");
+        holder.distance.setText(String.format("%.2f",(float)mStep.getAft_distance()/(float)1000*(0.621371))+" miles");
         holder.arrtime.setText(mStep.getArrtime());
         holder.weather.setText(mStep.getWlist().get(0).getWx());
         holder.temp.setText(mStep.getWlist().get(0).getTemp()+"°F");
+        holder.stepLength.setText(String.format("%.2f",(float)mStep.getStep().getDistance().getValue()/(float)1000*(0.621371))+ " miles");
         Glide.with(context)
                 .load(mStep.getWlist().get(0).getImgurl())
                 .override(100,100)
@@ -73,7 +74,7 @@ public class DragupListAdapter extends RecyclerView.Adapter<DragupListAdapter.Pn
 
 
 
-        TextView instr,distance,arrtime,temp,weather;
+        TextView instr,distance,arrtime,temp,weather,stepLength;
         ImageView weatherimg;
         public PnrViewHolder(View itemView) {
             super(itemView);
@@ -83,6 +84,7 @@ public class DragupListAdapter extends RecyclerView.Adapter<DragupListAdapter.Pn
             distance= (TextView) itemView.findViewById(R.id.distance);
             arrtime= (TextView) itemView.findViewById(R.id.arrtime);
             weatherimg=itemView.findViewById(R.id.weatherImg);
+            stepLength=itemView.findViewById(R.id.stepLength);
         }
     }
 }

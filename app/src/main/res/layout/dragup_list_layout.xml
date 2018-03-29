@@ -247,7 +247,7 @@
         <TextView
             android:layout_marginLeft="2dp"
             android:layout_gravity="center_vertical"
-            android:id="@+id/step"
+            android:id="@+id/stepLength"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-thin"
