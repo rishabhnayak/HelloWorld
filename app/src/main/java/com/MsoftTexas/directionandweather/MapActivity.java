@@ -398,8 +398,9 @@ public class MapActivity extends AppCompatActivity implements
 //                                item.getLname().substring(0, 20) + "...\n Arr :" + item.getArrtime() + "   Dist :" + item.getDistance()
 //                        );
 
-//                        builderSingle.setIcon(R.drawable.ic_swap_calls_black_24dp);
-//                        builderSingle.setTitle(item.getLname().substring(0, 20) + "...");
+                        builderSingle.setIcon(R.drawable.ic_directions_black_24dp);
+                        builderSingle.setTitle(item.getLname().substring(0, 20) + "...");
+                        builderSingle.setMessage("Arrival:"+item.getArrtime()+"  "+"Distance:"+item.getDistance());
                         final ArrrayAdapter Adapter = new ArrrayAdapter(MapActivity.this, item.getWlist());
 
                         final ListView modeList = new ListView(MapActivity.this);
@@ -423,9 +424,9 @@ public class MapActivity extends AppCompatActivity implements
 //                                step.getStep().getManeuver() + "...\n Arr :" + step.getArrtime() + "   Dist :" + step.getAft_distance()
 //                        );
 
-//                        builderSingle.setIcon(R.drawable.ic_swap_calls_black_24dp);
-//                        builderSingle.setTitle(step.getStep().getManeuver() + "...");
-                       // builderSingle.setMessage("Arrival:"+step.getArrtime()+"\n"+"Distance:"+step.getAft_distance()+"\n");
+                        builderSingle.setIcon(R.drawable.ic_directions_black_24dp);
+                        builderSingle.setTitle(step.getStep().getManeuver() + "...");
+                        builderSingle.setMessage("Arrival:"+step.getArrtime()+"  "+"Distance:"+step.getAft_distance());
                         final ArrrayAdapter Adapter = new ArrrayAdapter(MapActivity.this, step.getWlist());
 
                         final ListView modeList = new ListView(MapActivity.this);
