@@ -54,7 +54,7 @@ public class DragupListAdapter extends RecyclerView.Adapter<DragupListAdapter.Pn
         //     holder.instr.setText(mStep.getStep().getHtml_instructions());
 //        holder.distance.setText("Traveled : "+mStep.getAft_distance()/(long)1000+" km");
 //        holder.arrtime.setText("Start time:"+mStep.getArrtime());
-        holder.distance.setText(mStep.getAft_distance()/(long)1000+" km");
+        holder.distance.setText((long)mStep.getAft_distance()/(long)1000+" km");
         holder.arrtime.setText(mStep.getArrtime());
         holder.weather.setText(mStep.getWlist().get(0).getWx());
         holder.temp.setText(mStep.getWlist().get(0).getTemp()+"°F");

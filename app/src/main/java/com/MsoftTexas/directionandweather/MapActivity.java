@@ -1,19 +1,20 @@
 package com.MsoftTexas.directionandweather;
 
+import android.*;
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.content.pm.PackageManager;
+
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.Build;
+
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,12 +30,12 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
+
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.MsoftTexas.directionandweather.Adapters.DragupListAdapter;
+
 import com.MsoftTexas.directionandweather.DirectionApiModel.DirectionApi;
 import com.MsoftTexas.directionandweather.DirectionApiModel.Route;
 import com.MsoftTexas.directionandweather.Models.Apidata;
@@ -42,9 +43,7 @@ import com.MsoftTexas.directionandweather.Models.Item;
 import com.MsoftTexas.directionandweather.Models.MStep;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+
 
 
 import com.google.android.gms.location.places.GeoDataClient;
@@ -60,17 +59,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.gson.Gson;
-import com.google.maps.android.PolyUtil;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -80,39 +70,35 @@ public class MapActivity extends AppCompatActivity implements
         ,View.OnClickListener
         {
 
-    RelativeLayout custom_dialog;
+    static Context context;
+    static RelativeLayout custom_dialog;
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+   static  LottieAnimationView loading;
+     static  List<PolylineOptions> polylineOptionsList;
+     static List<Polyline> polylines=new ArrayList<>();
+    static List<Marker> markersInterm = new ArrayList<>();
+    static List<Marker> markersSteps = new ArrayList<>();
 
-
-    LottieAnimationView loading;
-            List<PolylineOptions> polylineOptionsList;
-            private List<Marker> markersInterm = new ArrayList<>();
-            private List<Marker> markersSteps = new ArrayList<>();
-
-    TextView loading_text;
-    int selectedroute=0;
-    String timezone;
-    int mYear,mMonth,mDay, mHour, mMinute;
+    static TextView loading_text;
+    static  int selectedroute=0;
+    static String timezone;
+    static int mYear,mMonth,mDay, mHour, mMinute;
     static long interval=50000;
-    Boolean weatherloaded=false, routeloaded=false;
-    TextView time;
-    CardView date_holder;
-    TextView departAt;
+    static Boolean weatherloaded=false, routeloaded=false;
+    static TextView time;
+   static CardView date_holder;
+   static TextView departAt;
     static ImageView go;
     static TextView src,dstn;
-    Snackbar snackbar;
-    SlidingUpPanelLayout slidingUpPanelLayout;
-    long jstart_date_millis, jstart_time_millis;
-    private Marker originMarker, dstnMarker;
+    static  SlidingUpPanelLayout slidingUpPanelLayout;
+    static long jstart_date_millis, jstart_time_millis;
+    static private Marker originMarker, dstnMarker;
     private List<Marker> markers = new ArrayList<>();
-    Apidata apiData=null;
-    private List<Polyline> polylines;
-    private GoogleMap googleMap;
+    static Apidata apiData=null;
+          static GoogleMap googleMap;
     private String serverKey = "AIzaSyDi3B9R9hVpC9YTmOCCz_pCR1BKW3tIRGY";
-   // private LatLng origin = new LatLng(21.20237812824328, 81.66264429688454);
-  //  private LatLng destination = new LatLng(21.093630988713727,80.70856142789125);
-
-            DirectionApi directionapi;
-    TextView distance, duration;
+    static DirectionApi directionapi;
+    static TextView distance, duration;
     ImageView RequestDirection;
      static LatLng origin = null;
 
@@ -122,20 +108,23 @@ public class MapActivity extends AppCompatActivity implements
 
     SharedPreferences sd;
     String[] month={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
-
-
-    RecyclerView link;
+   static RecyclerView link;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "MapActivity");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         sd = this.getSharedPreferences("com.MsoftTexas.directionandweather", Context.MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        context=getApplicationContext();
         src =findViewById(R.id.autocomplete_source);
         dstn=findViewById(R.id.autocomplete_destination);
         go=findViewById(R.id.request_direction);
@@ -217,7 +206,7 @@ public class MapActivity extends AppCompatActivity implements
         String curr_time = sHour + ":" + sMinute;
         time.setText(curr_time);
         departAt.setText(curr_time+","+mDay+" "+month[mMonth]+" "+String.valueOf(mYear).substring(2));
-        // Set up the 'clear text' button that clears the text in the autocomplete view
+        
         Button clearButton = findViewById(R.id.button_clear);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,10 +214,6 @@ public class MapActivity extends AppCompatActivity implements
                 recreate();
             }
         });
-
-
-
-
         date_holder.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -237,8 +222,6 @@ public class MapActivity extends AppCompatActivity implements
 
             }
         });
-
-
         time.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -265,43 +248,30 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main2, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
 
-        //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
             case R.id.km20:
                 item.setChecked(true);
-               // displayToast("One Selected");
                 MapActivity.interval=20000;
-             //   requestDirection();
                 return true;
             case R.id.km30:
                  item.setChecked(true);
                 MapActivity.interval=30000;
-             //   requestDirection();
                 Toast.makeText(this, "30km", Toast.LENGTH_SHORT).show();
-               // displayToast("Two Selected");
                 return true;
             case R.id.km40:
                item.setChecked(true);
                 MapActivity.interval=40000;
-             //   requestDirection();
-               // displayToast("Three Selected");
                 return true;
             case R.id.km50:
                 item.setChecked(true);
                 MapActivity.interval=50000;
-              //  requestDirection();
-                //displayToast("Four Selected");
                 return true;
             case R.id.action_retry:
                 requestDirection();
@@ -309,7 +279,8 @@ public class MapActivity extends AppCompatActivity implements
                 return true;
             case R.id.action_clr:
                 Toast.makeText(this, "clear", Toast.LENGTH_SHORT).show();
-
+                origin=null;
+                destination=null;
                 recreate();
                 return true;
                 default:
@@ -323,11 +294,20 @@ public class MapActivity extends AppCompatActivity implements
 
     }
 
-    @Override
+            @Override
+            protected void onStart() {
+                super.onStart();
+                checkLocationPermission();
+            }
+
+            @Override
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        //ON     googleMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(36,41),4) );
+       
+
+
+  
 
         googleMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener()
         {
@@ -340,8 +320,6 @@ public class MapActivity extends AppCompatActivity implements
                 for(int k=0;k<polylines.size();k++){
                     polylines.get(k).remove();
                     if(!polylines.get(k).equals(polyline)){
-//                       polylines.get(k).setColor( getResources().getColor(R.color.alternateRoute));
-//                       polylines.get(k).setWidth(15);
                         polylineOptionsList.get(k).color(getResources().getColor(R.color.alternateRoute));
                         polylineOptionsList.get(k).width(15);
                         Polyline p=googleMap.addPolyline(polylineOptionsList.get(k));
@@ -353,8 +331,7 @@ public class MapActivity extends AppCompatActivity implements
 
                 }
                 selectedroute=val;
-//                polylines.get(val).setColor(getResources().getColor(R.color.seletedRoute));
-//                polylines.get(val).setWidth(18);
+
                 polylineOptionsList.get(val).color(getResources().getColor(R.color.seletedRoute));
                 polylineOptionsList.get(val).width(15);
                 Polyline selectedPolyline=googleMap.addPolyline(polylineOptionsList.get(val));
@@ -374,7 +351,7 @@ public class MapActivity extends AppCompatActivity implements
                 loading.setVisibility(View.VISIBLE);
                 loading_text.setVisibility(View.VISIBLE);
                 loading_text.setText("loading weather...");
-                new apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new WeatherApi().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -508,6 +485,37 @@ public class MapActivity extends AppCompatActivity implements
     }
 
 
+            public boolean checkLocationPermission(){
+                if (ContextCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    // Asking user if explanation is needed
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                        // Show an explanation to the user *asynchronously* -- don't block
+                        // this thread waiting for the user's response! After the user
+                        // sees the explanation, try again to request the permission.
+
+                        //Prompt the user once explanation has been shown
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                MY_PERMISSIONS_REQUEST_LOCATION);
+
+
+                    } else {
+                        // No explanation needed, we can request the permission.
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                MY_PERMISSIONS_REQUEST_LOCATION);
+                    }
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
 
 
     public void requestDirection() {
@@ -523,7 +531,6 @@ public class MapActivity extends AppCompatActivity implements
             loading.setVisibility(View.VISIBLE);
             loading_text.setVisibility(View.VISIBLE);
            // slidingUpPanelLayout.setAlpha(0.5f);
-           // loading.setProgress(0);
             loading.setSpeed(1f);
             loading_text.setText("Loading Route");
 
@@ -536,21 +543,14 @@ public class MapActivity extends AppCompatActivity implements
             dstnMarker.setTitle("destination");
 
 
-              new routing().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-//             new Routing.Builder()
-//                    .travelMode(Routing.TravelMode.DRIVING)
-//                    .withListener(MapActivity.this)
-//                    .key(serverKey)
-//                    .waypoints(origin,destination)
-//                    .build()
-//                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-             new apidata().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+             new RouteApi().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+             new WeatherApi().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }else{
             Toast.makeText(getApplicationContext(),"origin or destination null", Toast.LENGTH_LONG).show();
         }
     }
 
-    private void setCameraWithCoordinationBounds(Route route) {
+    static void setCameraWithCoordinationBounds(Route route) {
         LatLng southwest = new LatLng(route.getBounds().getSouthwest().getLat(),route.getBounds().getSouthwest().getLng());
         LatLng northeast =  new LatLng(route.getBounds().getNortheast().getLat(),route.getBounds().getNortheast().getLng());
         LatLngBounds bounds = new LatLngBounds(southwest, northeast);
@@ -624,329 +624,7 @@ public class MapActivity extends AppCompatActivity implements
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
-
-    public class routing extends AsyncTask<Object,Object,DirectionApi> {
-
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected void onPostExecute(DirectionApi apidata) {
-
-            routeloaded=true;
-
-      //      System.out.println("direction data : "+new Gson().toJson(apidata));
-           directionapi=apidata;
-            Route route=apidata.getRoutes().get(0);
-
-
-            System.out.println("here is polyline : "+apidata.getRoutes().get(0).getOverview_polyline().getPoints());
-            if(weatherloaded){
-                custom_dialog.setVisibility(View.GONE);
-            }else{
-                loading_text.setText("loading weather..");
-            }
-
-            System.out.println("here is the route data :\n"+new Gson().toJson(apidata));
-            if (new Gson().toJson(apidata)!=null){
-//                Handler handler = new Handler();
-//
-//                handler.postDelayed(new Runnable(){
-//                    @Override
-//                    public void run(){
-//                        loading.setVisibility(View.GONE);
-//                        loading_text.setVisibility(View.GONE);
-//
-//                    }
-//                }, 1500);
-                slidingUpPanelLayout.setAlpha(1);
-            }
-            System.out.println("direction success.............babes.......");
-            polylines = new ArrayList<>();
-            //add route(s) to the map.
-
-            distance.setText("("+route.getLegs().get(0).getDistance().getText()+")");
-            duration.setText(route.getLegs().get(0).getDuration().getText());
-            if (route.getLegs().get(0).getDuration().getText()!=null){
-                slidingUpPanelLayout.setPanelHeight(getApplicationContext().getResources().getDimensionPixelSize(R.dimen.dragupsize));
-            }
-
-
-
-            polylineOptionsList = new ArrayList<>();
-            System.out.println("route options : "+apidata.getRoutes().size());
-            Polyline selectedPolyline = null;
-            if(apidata.getRoutes().size()>0) {
-                List<LatLng> lst = PolyUtil.decode(apidata.getRoutes().get(0).getOverview_polyline().getPoints());
-                PolylineOptions polyOptions = new PolylineOptions();
-                polyOptions.color(getResources().getColor(R.color.seletedRoute));
-                polyOptions.width(18);
-                polyOptions.addAll(lst);
-
-                polylines.add(selectedPolyline);
-                polylineOptionsList.add(polyOptions);
-            }
-
-            if(apidata.getRoutes().size()>1) {
-                for (int i = 1; i < apidata.getRoutes().size(); i++) {
-                    List<LatLng> lst = PolyUtil.decode(apidata.getRoutes().get(i).getOverview_polyline().getPoints());
-                    //In case of more than 5 alternative routes
-                    //   int colorIndex = i % COLORS.length;
-
-                    PolylineOptions polyOptions = new PolylineOptions();
-
-                    polyOptions.color(getResources().getColor(R.color.alternateRoute));
-                    polyOptions.width(15);
-
-
-                    polyOptions.addAll(lst);
-                    Polyline polyline = googleMap.addPolyline(polyOptions);
-                    polylines.add(polyline);
-                    polyline.setClickable(true);
-                    polylineOptionsList.add(polyOptions);
-                }
-            }
-
-            if(polylineOptionsList!=null && polylineOptionsList.get(0)!=null) {
-                selectedPolyline=googleMap.addPolyline(polylineOptionsList.get(0));
-                polylines.set(0,selectedPolyline);
-                selectedPolyline.setClickable(true);
-            }
-
-            setCameraWithCoordinationBounds(route);
-
-
-        }
-
-        @Override
-        protected DirectionApi doInBackground(Object[] objects) {
-            try {
-
-
-                HttpClient client = new DefaultHttpClient();
-
-
-                HttpResponse response = null;
-
-                //nbsc-1518068960369.appspot.com
-                System.out.println("https://maps.googleapis.com/maps/api/directions/json?origin="
-                        +origin.latitude+","+origin.longitude
-                        +"&destination="+destination.latitude+","+destination.longitude
-                        +"&alternatives=true"
-                        +"&key=AIzaSyDi3B9R9hVpC9YTmOCCz_pCR1BKW3tIRGY");
-                HttpGet request = new HttpGet("https://maps.googleapis.com/maps/api/directions/json?origin="
-                        +origin.latitude+","+origin.longitude
-                        +"&destination="+destination.latitude+","+destination.longitude
-                        +"&alternatives=true"
-                        +"&key=AIzaSyDi3B9R9hVpC9YTmOCCz_pCR1BKW3tIRGY");
-                BufferedReader rd=null;
-                try {
-                    response = client.execute(request);
-                    rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-//                    String line="";
-//                    while ((line=rd.readLine())!=null){
-//                        System.out.println(line+"\n");
-//                    }
-                    return new Gson().fromJson(rd,DirectionApi.class);
-                } catch (Exception e) {
-                    System.out.println("error : " + e.toString());
-
-
-                    String line="";
-                    while ((line=rd.readLine())!=null){
-                        System.out.println(line+"\n");
-                    }
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-
-        }
-
-
-    }
-
-
-
-    public class apidata extends AsyncTask<Object,Object,Apidata> {
-
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected void onPostExecute(Apidata apidata) {
-            System.out.println("weather data call has started........");
-               weatherloaded=true;
-
-            System.out.println("here is the list of intermediate Points:");
-
-
-
-
-            apiData=apidata;
-            int c=-1;
-            if(apidata!=null && apidata.getItems()!=null){
-                for(final Item item:apidata.getItems()) {
-                    c++;
-                    System.out.println(new Gson().toJson(item));
-                    loading.setVisibility(View.GONE);
-                    loading_text.setVisibility(View.GONE);
-                    slidingUpPanelLayout.setAlpha(1);
-                    //   googleMap.addMarker(new MarkerOptions().position(item.getPoint()));
-                    final int finalC = c;
-                    Glide.with(getApplicationContext())
-                            .load(item.getWlist().get(0).getImgurl())
-                            .asBitmap()
-                            .fitCenter()
-                            .into(new SimpleTarget<Bitmap>(90, 90) {
-                                @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                    Marker marker = googleMap.addMarker(new MarkerOptions()
-                                            .icon(BitmapDescriptorFactory.fromBitmap(resource))
-                                            .position(new LatLng(item.getPoint().getLatitude(), item.getPoint().getLongitude())));
-                                    marker.setTag("I"+finalC);
-                                    markersInterm.add(marker);
-                                }
-
-                                @Override
-                                public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                                googleMap.addMarker(new MarkerOptions()
-//                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_default_logo))
-//                                        .position(place.getLatLng()));
-                                    e.printStackTrace();
-                                }
-                            });
-                }
-            }else{
-                System.out.println("api data is null or api.getlist is null");
-            }
-
-
-            if(apidata!=null && apidata.getSteps()!=null){
-                link.setAdapter(new DragupListAdapter(getApplicationContext(), apidata.getSteps()));
-                for(final MStep mStep:apidata.getSteps()) {
-                    c++;
-                    System.out.println(new Gson().toJson(mStep));
-                    loading.setVisibility(View.GONE);
-                    loading_text.setVisibility(View.GONE);
-                    slidingUpPanelLayout.setAlpha(1);
-                    //   googleMap.addMarker(new MarkerOptions().position(item.getPoint()));
-                    final int finalC = c;
-                    Glide.with(getApplicationContext())
-                            .load(mStep.getWlist().get(0).getImgurl())
-                            .asBitmap()
-                            .fitCenter()
-                            .into(new SimpleTarget<Bitmap>(90, 90) {
-                                @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                    Marker marker = googleMap.addMarker(new MarkerOptions()
-                                            .icon(BitmapDescriptorFactory.fromBitmap(resource))
-                                            .position(new LatLng(mStep.getStep().getStart_location().getLat(),mStep.getStep().getStart_location().getLng())));
-                                    marker.setTag("S"+finalC);
-                                    markersSteps.add(marker);
-                                }
-
-                                @Override
-                                public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                                googleMap.addMarker(new MarkerOptions()
-//                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_default_logo))
-//                                        .position(place.getLatLng()));
-                                    e.printStackTrace();
-                                }
-                            });
-                }
-
-            }else {
-                System.out.println("api data is null or api.getlist is null");
-            }
-
-            if(routeloaded) {
-               new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //Do something after 100ms
-                        custom_dialog.setVisibility(View.GONE);
-                    }
-                }, 1000);
-
-            }else{
-
-                custom_dialog.setVisibility(View.VISIBLE);
-                loading_text.setText("loading route...");
-            }
-
-          }
-
-        @Override
-        protected Apidata doInBackground(Object[] objects) {
-            try {
-
-
-                HttpClient client = new DefaultHttpClient();
-
-
-                HttpResponse response = null;
-
-                //nbsc-1518068960369.appspot.com
-
-                System.out.println("http://a6c754c6.ngrok.io/_ah/api/myapi/v1/wdata?"
-                        +"olat="+origin.latitude+"&olng="+origin.longitude
-                        +"&dlat="+destination.latitude+"&dlng="+destination.longitude
-                        +"&route="+selectedroute
-                        +"&interval="+interval
-                        +"&tz="+timezone
-                        +"&jstime="+(jstart_date_millis+jstart_time_millis));
-//                HttpGet request = new HttpGet("http://a6c754c6.ngrok.io/_ah/api/myapi/v1/wdata?"
-//                        +"olat="+origin.latitude+"&olng="+origin.longitude
-//                        +"&dlat="+destination.latitude+"&dlng="+destination.longitude
-//                        +"&route="+selectedroute
-//                        +"&interval"+interval
-//                        +"&tz="+timezone
-//                        +"&jstime="+(jstart_date_millis+jstart_time_millis)
-
-
-                HttpGet request=new HttpGet("https://nbsc-1518068960369.appspot.com/_ah/api/myapi/v1/wdata?" +
-                        "olat="+origin.latitude +
-                        "&olng="+origin.longitude +
-                        "&dlat="+destination.latitude +
-                        "&dlng="+destination.longitude +
-                        "&route="+selectedroute +
-                        "&interval="+interval +
-                        "&tz=" +timezone.replace("/","%2F") +
-                        "&jstime="+(jstart_date_millis+jstart_time_millis)
-                );
-                BufferedReader rd=null;
-                try {
-                    response = client.execute(request);
-                    rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-                    return new Gson().fromJson(rd,Apidata.class);
-                } catch (Exception e) {
-                    System.out.println("error : " + e.toString());
-                    String line="";
-                    while ((line=rd.readLine())!=null){
-                        System.out.println(line+"\n");
-                    }
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-
-    }
+ 
 
 
 

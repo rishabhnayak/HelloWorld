@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "793960761520",
+    "firebase_url": "https://directionandweather.firebaseio.com",
+    "project_id": "directionandweather",
+    "storage_bucket": "directionandweather.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793960761520:android:ff71fbf0b0e67cff",
+        "android_client_info": {
+          "package_name": "com.MsoftTexas.directionandweather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "793960761520-h0h48gitefub2ns42a1f6tqfh0p17jd0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.MsoftTexas.directionandweather",
+            "certificate_hash": "6567d97298eb87b00c458703414cffc27d8fbea9"
+          }
+        },
+        {
+          "client_id": "793960761520-k210gcsq9i3vtbp4uligjq23od2cvpo8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVWkDcamHGHiy4PyeAa7bVMM-XhElT0lc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793960761520-k210gcsq9i3vtbp4uligjq23od2cvpo8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
