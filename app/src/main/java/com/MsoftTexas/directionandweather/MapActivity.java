@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -45,7 +46,7 @@ import com.MsoftTexas.directionandweather.Models.MStep;
 import com.airbnb.lottie.LottieAnimationView;
 
 
-
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -230,6 +231,8 @@ public class MapActivity extends AppCompatActivity implements
 
             }
         });
+
+
 
     }
 
