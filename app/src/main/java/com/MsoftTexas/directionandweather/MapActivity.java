@@ -62,8 +62,12 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements
@@ -543,6 +547,8 @@ public class MapActivity extends AppCompatActivity implements
                         cal.set(Calendar.DAY_OF_MONTH,dayOfMonth);
                         cal.set(Calendar.MONTH, monthOfYear);
                         cal.set(Calendar.YEAR, year);
+                        cal.set(Calendar.HOUR_OF_DAY,0);
+                        cal.set(Calendar.MINUTE,0);
 
                         jstart_date_millis=cal.getTimeInMillis();
 
@@ -553,6 +559,10 @@ public class MapActivity extends AppCompatActivity implements
                     }
                 }, mYear, mMonth, mDay);
 
+
+
+        datePickerDialog.getDatePicker().setMinDate(jstart_date_millis);
+        datePickerDialog.getDatePicker().setMaxDate(jstart_date_millis+5*24*60*60*1000);
         datePickerDialog.show();
     }
 
