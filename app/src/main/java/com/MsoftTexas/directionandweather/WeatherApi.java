@@ -1,7 +1,10 @@
 package com.MsoftTexas.directionandweather;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.view.View;
@@ -60,13 +63,11 @@ public class WeatherApi extends AsyncTask<Object,Object,String> {
 
     @Override
     protected void onPostExecute(String data) {
-
-        Apidata apidata=null;
         try {
+        Apidata apidata=null;
+
             apidata = new Gson().fromJson(data, Apidata.class);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+
         System.out.println("weather data call has started........");
         MapActivity.weatherloaded=true;
         System.out.println("here is the list of intermediate Points:");
@@ -162,11 +163,27 @@ public class WeatherApi extends AsyncTask<Object,Object,String> {
             loading_text.setText("loading route...");
         }
 
+        }catch (Exception e){
+            e.printStackTrace();
+            custom_dialog.setVisibility(View.VISIBLE);
+            loading.setVisibility(View.GONE);
+            loading_text.setVisibility(View.VISIBLE);
+            if(data.equals("NoInternet")){
+                loading_text.setText("No Internet Connection.Please Check Your Internet Connection");
+            }else {
+                loading_text.setText("Error :" + e.toString());
+            }
+        }
+
     }
 
     @Override
     protected String doInBackground(Object[] objects) {
         try {
+            ConnectivityManager mgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = mgr.getActiveNetworkInfo();
+
+            if (netInfo != null && netInfo.isConnected()) {
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = null;
             //nbsc-1518068960369.appspot.com
@@ -197,6 +214,9 @@ public class WeatherApi extends AsyncTask<Object,Object,String> {
                 sb.append(line);
             }
             return sb.toString();
+            }else{
+                return "NoInternet";
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -74,12 +74,11 @@ public class MapActivity extends AppCompatActivity implements
     static Context context;
     static RelativeLayout custom_dialog;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-   static  LottieAnimationView loading;
-     static  List<PolylineOptions> polylineOptionsList;
-     static List<Polyline> polylines=new ArrayList<>();
+    static  LottieAnimationView loading;
+    static  List<PolylineOptions> polylineOptionsList;
+    static List<Polyline> polylines=new ArrayList<>();
     static List<Marker> markersInterm = new ArrayList<>();
     static List<Marker> markersSteps = new ArrayList<>();
-
     static TextView loading_text;
     static  int selectedroute=0;
     static String timezone;
@@ -87,8 +86,8 @@ public class MapActivity extends AppCompatActivity implements
     static long interval=50000;
     static Boolean weatherloaded=false, routeloaded=false;
     static TextView time;
-   static CardView date_holder;
-   static TextView departAt;
+    static CardView date_holder;
+    static TextView departAt;
     static ImageView go;
     static TextView src,dstn;
     static  SlidingUpPanelLayout slidingUpPanelLayout;
@@ -96,17 +95,14 @@ public class MapActivity extends AppCompatActivity implements
     static private Marker originMarker, dstnMarker;
     private List<Marker> markers = new ArrayList<>();
     static Apidata apiData=null;
-          static GoogleMap googleMap;
+    static GoogleMap googleMap;
     private String serverKey = "AIzaSyDi3B9R9hVpC9YTmOCCz_pCR1BKW3tIRGY";
     static DirectionApi directionapi;
     static TextView distance, duration;
     ImageView RequestDirection;
-     static LatLng origin = null;
-
-     static LatLng destination = null;
-
+    static LatLng origin = null;
+    static LatLng destination = null;
     protected GeoDataClient mGeoDataClientS, mGeoDataClientD;
-
     SharedPreferences sd;
     String[] month={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -270,7 +266,7 @@ public class MapActivity extends AppCompatActivity implements
                 return true;
             case R.id.km40:
                item.setChecked(true);
-                MapActivity.interval=40000;
+               MapActivity.interval=40000;
                 return true;
             case R.id.km50:
                 item.setChecked(true);
