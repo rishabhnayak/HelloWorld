@@ -17,6 +17,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+
+        <!--<LinearLayout-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+            <!--<TextView-->
+
+                <!--android:textColor="#4383a0"-->
+                <!--android:textStyle="italic"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:fontFamily="sans-serif-thin"-->
+                <!--android:textSize="15sp"-->
+                <!--android:id="@+id/address"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text=""-->
+                <!--android:textAllCaps="true"/>-->
+        <!--</LinearLayout>-->
         <!--layout 1.........................................................-->
         <LinearLayout
             android:orientation="horizontal"

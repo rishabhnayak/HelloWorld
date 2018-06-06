@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:793960761520:android:9d9533ee3b93a7c0",
         "android_client_info": {
-          "package_name": "com.kamlesh.directionandweather123"
+          "package_name": "com.MsoftTexas.WeatherOnMyTripRoute"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "793960761520-jr72q9m2bv9ahnfbamdqbpjq8gdtvkvb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.kamlesh.directionandweather123",
+            "package_name": "com.MsoftTexas.WeatherOnMyTripRoute",
             "certificate_hash": "6567d97298eb87b00c458703414cffc27d8fbea9"
           }
         },
@@ -54,7 +54,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:793960761520:android:ff71fbf0b0e67cff",
         "android_client_info": {
-          "package_name": "com.kamlesh.directionandweather123"
+          "package_name": "com.MsoftTexas.WeatherOnMyTripRoute"
         }
       },
       "oauth_client": [
@@ -62,7 +62,7 @@
           "client_id": "793960761520-h0h48gitefub2ns42a1f6tqfh0p17jd0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.kamlesh.directionandweather123",
+            "package_name": "com.MsoftTexas.WeatherOnMyTripRoute",
             "certificate_hash": "6567d97298eb87b00c458703414cffc27d8fbea9"
           }
         },

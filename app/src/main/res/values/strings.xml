@@ -1,14 +1,15 @@
 <resources>
-    <string name="app_name">weatheranddirection</string>
+    <string name="app_name">WeatherOnMyTripRoute</string>
     <string name="simple_direction">Simple Direction</string>
     <string name="transit_direction">Transit Direction</string>
     <string name="alternative_direction">Alternative Direction</string>
     <string name="waypoints_direction">Waypoints Direction</string>
     <string name="request_direction">Request Direction</string>
     <string name="title_activity_main2">Main2Activity</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
+    <string name="wait">wait…</string>
+    <string name="LicenseKey">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhkWatLBkcw3ELvpucag5CAFHjVfT8mR+ZpjfN/f59cMxpprIC3rFGgBNMbY+IrS5wgNKuPY6JqTOfiDB9oDJl/XGyVWnXkA9CQtCBEyobtpm4QKIxqBi4iy1d+kGvzrni/6Hhq3CLuBn6EVBs49Y2tktABnO67Niwh+xsVdPBND+zfjXAc3lB4TEGPO6RXTcZYtQeCP2k9d5wOb/lwHVN0vFd9a3sBd2vmBHZC+2ocH+jPs5rVO+S1flBdvjlpDhpdEBY0ODrR6gA9Vuj0tOtAdLqx1Bg8+LwRBku/1TPA3BzieCWqZTujAuLVYsQiglggw4lc2+h7f+fnmnam+y7wIDAQAB</string>
+
 </resources>
